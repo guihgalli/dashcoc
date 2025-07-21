@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - @(ViewBag.CabecalhoSistema ?? "DorowCamp")</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/messages.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <!-- Sistema de Mensagens -->
+    @await Html.PartialAsync("_Messages")
+    
+    <div class="login-container">
+        <div class="login-wrapper">
+            @RenderBody()
+        </div>
+    </div>
+    
+    <footer class="login-footer">
+        <div class="container-fluid">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-auto">
+                    <span class="footer-text me-3">
+                        @(ViewBag.NomeRodape ?? "Sistema DorowCamp 2025©")
+                    </span>
+                    <small class="version-text">
+                        Versão @(ViewBag.VersaoSistema ?? "1.0.0")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validação e funcionalidades do formulário de login
+        $(document).ready(function() {
+            const form = $('#loginForm');
+            const loginBtn = $('#loginBtn');
+            const emailInput = $('#email');
+            const senhaInput = $('#senha');
+            
+            // Validação em tempo real
+            emailInput.on('input', function() {
+                validateField($(this), $(this).val().trim() !== '');
+            });
+            
+            senhaInput.on('input', function() {
+                validateField($(this), $(this).val().trim() !== '');
+            });
+            
+            // Validação no submit
+            form.on('submit', function(e) {
+                let isValid = true;
+                
+                // Validar e-mail
+                if (emailInput.val().trim() === '') {
+                    validateField(emailInput, false);
+                    isValid = false;
+                } else {
+                    validateField(emailInput, true);
+                }
+                
+                // Validar senha
+                if (senhaInput.val().trim() === '') {
+                    validateField(senhaInput, false);
+                    isValid = false;
+                } else {
+                    validateField(senhaInput, true);
+                }
+                
+                if (!isValid) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Mostrar loading
+                loginBtn.addClass('loading');
+                loginBtn.prop('disabled', true);
+                
+                return true;
+            });
+            
+            function validateField(field, isValid) {
+                if (isValid) {
+                    field.removeClass('is-invalid').addClass('is-valid');
+                } else {
+                    field.removeClass('is-valid').addClass('is-invalid');
+                }
+            }
+            
+            // Foco automático no primeiro campo
+            emailInput.focus();
+            
+            // Suporte a Enter para navegar entre campos
+            emailInput.on('keypress', function(e) {
+                if (e.which === 13) {
+                    senhaInput.focus();
+                }
+            });
+            
+            senhaInput.on('keypress', function(e) {
+                if (e.which === 13) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> 

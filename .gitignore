@@ -1,0 +1,6 @@
+*.exe
+.terraform
+.terraform*
+terraform.tfvars
+*.pem
+*.backup

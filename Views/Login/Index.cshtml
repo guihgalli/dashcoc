@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_LoginLayout";
+}
+
+<div class="login-header">
+    <h1>Sistema DorowCamp</h1>
+    <p>Faça login para acessar o sistema</p>
+</div>
+
+<form asp-action="Index" method="post" class="login-form" id="loginForm">
+    @Html.AntiForgeryToken()
+    @if (ViewBag.Error != null)
+    {
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                showMessage('error', '@ViewBag.Error', 8000);
+            });
+        </script>
+    }
+    
+    <div class="form-group">
+        <label for="email">
+            <i class="bi bi-envelope me-1"></i>
+            E-mail
+        </label>
+        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required />
+        <div class="invalid-feedback">Por favor, informe um e-mail válido.</div>
+    </div>
+    
+    <div class="form-group">
+        <label for="senha">
+            <i class="bi bi-lock me-1"></i>
+            Senha
+        </label>
+        <input type="password" id="senha" name="password" placeholder="Digite sua senha" required />
+        <div class="invalid-feedback">Por favor, informe sua senha.</div>
+    </div>
+    
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="salvarCredenciais">
+        <label class="form-check-label" for="salvarCredenciais">
+            Salvar as credenciais
+        </label>
+    </div>
+    
+    <button type="submit" class="login-btn" id="loginBtn">
+        <span class="btn-text">
+            <i class="bi bi-box-arrow-in-right me-2"></i>
+            Entrar
+        </span>
+        <span class="btn-loading d-none">
+            <i class="bi bi-arrow-clockwise me-2"></i>
+            Entrando...
+        </span>
+    </button>
+    
+    <div class="login-links">
+        <a href="#" class="forgot-password" onclick="esqueciSenha()">
+            <i class="bi bi-question-circle me-1"></i>
+            Esqueci minha senha?
+        </a>
+        <a href="#" class="create-account" onclick="criarConta()">
+            <i class="bi bi-person-plus me-1"></i>
+            Criar conta de acesso
+        </a>
+    </div>
+</form>
+
+<!-- Área para alertas -->
+<div id="alertArea"></div>
+
+<!-- Modal Esqueci Minha Senha -->
+<div id="forgotPasswordModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Esqueci minha senha</h3>
+            <button type="button" class="modal-close" onclick="fecharModal()">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+        <form id="forgotPasswordForm" class="modal-form">
+            <div class="form-group">
+                <label for="resetEmail">
+                    <i class="bi bi-envelope me-1"></i>
+                    E-mail
+                </label>
+                <input type="email" id="resetEmail" name="email" placeholder="Digite seu e-mail" required />
+                <div class="invalid-feedback">Por favor, informe um e-mail válido.</div>
+            </div>
+            
+            <button type="submit" class="login-btn" id="sendResetBtn">
+                <span class="btn-text">
+                    <i class="bi bi-send me-2"></i>
+                    Enviar link de redefinição
+                </span>
+                <span class="btn-loading d-none">
+                    <i class="bi bi-arrow-clockwise me-2"></i>
+                    Enviando...
+                </span>
+            </button>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="fecharModal()">
+                    <i class="bi bi-x-circle me-2"></i>
+                    Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="~/js/login.js"></script> 
