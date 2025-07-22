@@ -74,40 +74,12 @@ namespace Gerente.Services
         {
             Console.WriteLine($"=== GERANDO CORPO DO EMAIL ===");
             Console.WriteLine($"Nome do usuário: {nomeUsuario}");
-            Console.WriteLine($"Nova senha para email (criptografada): {novaSenha}");
+            Console.WriteLine($"Senha para email: {novaSenha}");
             Console.WriteLine($"Tamanho da senha para email: {novaSenha?.Length ?? 0}");
-            
-            // Processar a senha - tentar descriptografar se possível
+
+            // Não tentar descriptografar, apenas exibir a senha recebida
             string senhaDescriptografada = novaSenha ?? "";
-            try
-            {
-                if (!string.IsNullOrEmpty(novaSenha))
-                {
-                    // Tentar descriptografar a senha
-                    string resultado = CryptoUtils.Decrypt(novaSenha);
-                    
-                    // Se a descriptografia retornou string vazia, usar a senha original
-                    if (string.IsNullOrEmpty(resultado))
-                    {
-                        senhaDescriptografada = novaSenha;
-                        Console.WriteLine($"Descriptografia retornou vazio, usando senha original: {senhaDescriptografada}");
-                    }
-                    else
-                    {
-                        senhaDescriptografada = resultado;
-                        Console.WriteLine($"Senha descriptografada com sucesso: {senhaDescriptografada}");
-                    }
-                    
-                    Console.WriteLine($"Tamanho da senha final: {senhaDescriptografada?.Length ?? 0}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"ERRO ao descriptografar senha: {ex.Message}");
-                Console.WriteLine("Usando senha original (não criptografada)");
-                senhaDescriptografada = novaSenha ?? "";
-            }
-            
+
             return $@"
                 <html>
                 <head>

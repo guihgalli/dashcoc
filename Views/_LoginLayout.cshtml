@@ -1,0 +1,17 @@
+@{
+    var parametrosSistema = ViewBag.ParametrosSistema as Gerente.Models.ParametroSistema;
+}
+<body style="@(parametrosSistema != null ? $"background-color: {parametrosSistema.CorFundoLogin};" : "")">
+    <!-- Sistema de Mensagens -->
+    @await Html.PartialAsync("_Messages")
+    <div class="login-container">
+        <div class="login-wrapper">
+            <h2 class="text-center mb-3">@ViewData["Title"] - @(ViewBag.CabecalhoSistema ?? "DorowCamp")</h2>
+            @if (parametrosSistema != null && !string.IsNullOrEmpty(parametrosSistema.DescricaoCabecalhoLogin))
+            {
+                <p class="text-center text-muted mb-4">@parametrosSistema.DescricaoCabecalhoLogin</p>
+            }
+            @RenderBody()
+        </div>
+    </div>
+</body> 

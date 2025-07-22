@@ -2,6 +2,9 @@
 @{
     ViewData["Title"] = "Criar Conta";
     Layout = "_LoginLayout";
+    var parametros = ViewBag.ParametrosSistema as Gerente.Models.ParametroSistema;
+    var siteKey = parametros?.ReCaptchaSiteKey ?? "";
+    var recaptchaEnabled = parametros?.ReCaptchaEnabled ?? false;
 }
 
 <div class="login-header">
@@ -11,6 +14,10 @@
 
 <form asp-action="CriarConta" method="post" class="login-form" id="criarContaForm">
     @Html.AntiForgeryToken()
+    @if (recaptchaEnabled)
+    {
+        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+    }
     
     @if (ViewBag.Sucesso != null)
     {
@@ -67,4 +74,16 @@
 <!-- Área para alertas -->
 <div id="alertArea"></div>
 
-<script src="~/js/criarConta.js"></script> 
+<script src="~/js/criarConta.js"></script>
+@if (recaptchaEnabled)
+{
+    <script src="https://www.google.com/recaptcha/api.js?render=@siteKey"></script>
+    <script>
+        window.recaptchaSiteKey = '@siteKey';
+        window.recaptchaEnabled = true;
+    </script>
+}
+else
+{
+    <script>window.recaptchaEnabled = false;</script>
+} 

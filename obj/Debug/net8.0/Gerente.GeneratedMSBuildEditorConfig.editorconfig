@@ -9,147 +9,155 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Gerente
 build_property.RootNamespace = Gerente
-build_property.ProjectDir = /app/coc-solucoes-projetos/
+build_property.ProjectDir = C:\Projeto\coc-solucoes-projetos\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /app/coc-solucoes-projetos
+build_property.MSBuildProjectDirectory = C:\Projeto\coc-solucoes-projetos
 build_property._RazorSourceGeneratorDebug = 
 
-[/app/coc-solucoes-projetos/Views/BacklogArquitetura/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFja2xvZ0FycXVpdGV0dXJhL0NyZWF0ZS5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/AlterarSenha/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWx0ZXJhclNlbmhhXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/BacklogArquitetura/Details.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFja2xvZ0FycXVpdGV0dXJhL0RldGFpbHMuY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/BacklogArquitetura/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFja2xvZ0FycXVpdGV0dXJhXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/BacklogArquitetura/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFja2xvZ0FycXVpdGV0dXJhL0VkaXQuY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/BacklogArquitetura/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFja2xvZ0FycXVpdGV0dXJhXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/BacklogArquitetura/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQmFja2xvZ0FycXVpdGV0dXJhL0luZGV4LmNzaHRtbA==
+[C:/Projeto/coc-solucoes-projetos/Views/BacklogArquitetura/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFja2xvZ0FycXVpdGV0dXJhXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/ConfiguracaoEmail/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ29uZmlndXJhY2FvRW1haWwvSW5kZXguY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/BacklogArquitetura/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFja2xvZ0FycXVpdGV0dXJhXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Home/AccessDenied.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9BY2Nlc3NEZW5pZWQuY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/ConfiguracaoEmail/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ29uZmlndXJhY2FvRW1haWxcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Home/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/Home/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2Nlc3NEZW5pZWQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Home/Privacy.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
+[C:/Projeto/coc-solucoes-projetos/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Login/CriarConta.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9naW4vQ3JpYXJDb250YS5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Login/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9naW4vSW5kZXguY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/Login/CriarConta.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cQ3JpYXJDb250YS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Login/ResetPassword.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTG9naW4vUmVzZXRQYXNzd29yZC5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/Login/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/ParametroAmbiente/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFyYW1ldHJvQW1iaWVudGUvQ3JlYXRlLmNzaHRtbA==
+[C:/Projeto/coc-solucoes-projetos/Views/Login/ResetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cUmVzZXRQYXNzd29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/ParametroAmbiente/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFyYW1ldHJvQW1iaWVudGUvRWRpdC5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/ParametroAmbiente/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJvQW1iaWVudGVcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/ParametroAmbiente/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFyYW1ldHJvQW1iaWVudGUvSW5kZXguY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/ParametroAmbiente/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJvQW1iaWVudGVcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/ParametroGanho/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFyYW1ldHJvR2FuaG8vQ3JlYXRlLmNzaHRtbA==
+[C:/Projeto/coc-solucoes-projetos/Views/ParametroAmbiente/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJvQW1iaWVudGVcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/ParametroGanho/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFyYW1ldHJvR2FuaG8vRWRpdC5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/ParametroGanho/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJvR2FuaG9cQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/ParametroGanho/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFyYW1ldHJvR2FuaG8vSW5kZXguY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/ParametroGanho/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJvR2FuaG9cRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/ParametroSistema/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFyYW1ldHJvU2lzdGVtYS9FZGl0LmNzaHRtbA==
+[C:/Projeto/coc-solucoes-projetos/Views/ParametroGanho/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJvR2FuaG9cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/ParametroSistema/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGFyYW1ldHJvU2lzdGVtYS9JbmRleC5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/ParametroSistema/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJvU2lzdGVtYVxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/PerfilAcesso/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGVyZmlsQWNlc3NvL0NyZWF0ZS5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/ParametroSistema/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFyYW1ldHJvU2lzdGVtYVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/PerfilAcesso/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGVyZmlsQWNlc3NvL0VkaXQuY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/PerfilAcesso/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVyZmlsQWNlc3NvXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/PerfilAcesso/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUGVyZmlsQWNlc3NvL0luZGV4LmNzaHRtbA==
+[C:/Projeto/coc-solucoes-projetos/Views/PerfilAcesso/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVyZmlsQWNlc3NvXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Projetos/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvamV0b3MvSW5kZXguY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/PerfilAcesso/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVyZmlsQWNlc3NvXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Relatorios/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUmVsYXRvcmlvcy9JbmRleC5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/Projetos/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvamV0b3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Shared/Error.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
+[C:/Projeto/coc-solucoes-projetos/Views/Relatorios/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVsYXRvcmlvc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Shared/_LoginLayout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Mb2dpbkxheW91dC5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Shared/_Messages.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19NZXNzYWdlcy5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/Shared/_LoginLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Shared/_ValidationScriptsPartial.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/Shared/_Messages.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9NZXNzYWdlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Usuario/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXN1YXJpby9DcmVhdGUuY3NodG1s
+[C:/Projeto/coc-solucoes-projetos/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Usuario/Edit.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXN1YXJpby9FZGl0LmNzaHRtbA==
+[C:/Projeto/coc-solucoes-projetos/Views/Usuario/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Usuario/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVXN1YXJpby9JbmRleC5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/Usuario/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/_ViewImports.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+[C:/Projeto/coc-solucoes-projetos/Views/Usuario/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/_ViewStart.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
+[C:/Projeto/coc-solucoes-projetos/Views/_LoginLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX0xvZ2luTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/app/coc-solucoes-projetos/Views/Shared/_Layout.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = b-k4v6kyf2tz
+[C:/Projeto/coc-solucoes-projetos/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projeto/coc-solucoes-projetos/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Projeto/coc-solucoes-projetos/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-1c2ujp6zcl

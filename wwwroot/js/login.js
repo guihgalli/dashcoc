@@ -478,12 +478,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 showMessage('error', 'Por favor, preencha todos os campos obrigatórios.', 5000);
                 return;
             }
-            
-
-            
-            // Mostrar loading
-            loginBtn.classList.add('loading');
-            loginBtn.disabled = true;
+            // Integração reCAPTCHA v3 condicional
+            if (window.recaptchaEnabled) {
+                if (window.grecaptcha && window.recaptchaSiteKey) {
+                    e.preventDefault();
+                    grecaptcha.ready(function() {
+                        grecaptcha.execute(window.recaptchaSiteKey, { action: 'login' }).then(function(token) {
+                            document.getElementById('g-recaptcha-response').value = token;
+                            loginForm.submit();
+                        });
+                    });
+                } else {
+                    // Mostrar loading normalmente se reCAPTCHA não carregou
+                    loginBtn.classList.add('loading');
+                    loginBtn.disabled = true;
+                }
+            } else {
+                // Se reCAPTCHA desativado, submeter normalmente
+                // Mostrar loading
+                loginBtn.classList.add('loading');
+                loginBtn.disabled = true;
+            }
         });
     }
 });

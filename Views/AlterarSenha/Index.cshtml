@@ -1,0 +1,30 @@
+@{
+    ViewData["Title"] = "Alterar Senha";
+}
+
+<h2>Alterar Senha</h2>
+
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erro"]</div>
+}
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success">@TempData["Sucesso"]</div>
+}
+
+<form asp-action="Index" method="post" autocomplete="off">
+    <div class="mb-3">
+        <label for="senhaAtual" class="form-label">Senha Atual</label>
+        <input type="password" class="form-control" id="senhaAtual" name="senhaAtual" required minlength="6" maxlength="30" size="30" style="width: auto; max-width: 350px;" />
+    </div>
+    <div class="mb-3">
+        <label for="novaSenha" class="form-label">Nova Senha</label>
+        <input type="password" class="form-control" id="novaSenha" name="novaSenha" required minlength="6" maxlength="30" size="30" style="width: auto; max-width: 350px;" />
+    </div>
+    <div class="mb-3">
+        <label for="confirmarNovaSenha" class="form-label">Confirmar Nova Senha</label>
+        <input type="password" class="form-control" id="confirmarNovaSenha" name="confirmarNovaSenha" required minlength="6" maxlength="30" size="30" style="width: auto; max-width: 350px;" />
+    </div>
+    <button type="submit" class="btn btn-primary">Alterar Senha</button>
+</form> 

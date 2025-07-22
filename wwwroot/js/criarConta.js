@@ -44,9 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(e) {
         var nome = nomeInput.value.trim();
         var email = emailInput.value.trim();
-        
         var isValid = true;
-        
         // Validações
         if (!nome || nome.length < 2) {
             nomeInput.classList.add('is-invalid');
@@ -54,27 +52,43 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             nomeInput.classList.remove('is-invalid');
         }
-        
         if (!email || !isValidEmail(email)) {
             emailInput.classList.add('is-invalid');
             isValid = false;
         } else {
             emailInput.classList.remove('is-invalid');
         }
-        
         if (!isValid) {
             e.preventDefault();
             showMessage('error', 'Por favor, corrija os erros no formulário.', 5000);
             return;
         }
-        
-        // Mostrar loading
-        var btnText = submitBtn.querySelector('.btn-text');
-        var btnLoading = submitBtn.querySelector('.btn-loading');
-        
-        btnText.classList.add('d-none');
-        btnLoading.classList.remove('d-none');
-        submitBtn.disabled = true;
+        // Integração reCAPTCHA v3 condicional
+        if (window.recaptchaEnabled) {
+            if (window.grecaptcha && window.recaptchaSiteKey) {
+                e.preventDefault();
+                grecaptcha.ready(function() {
+                    grecaptcha.execute(window.recaptchaSiteKey, { action: 'register' }).then(function(token) {
+                        document.getElementById('g-recaptcha-response').value = token;
+                        form.submit();
+                    });
+                });
+            } else {
+                // Mostrar loading normalmente se reCAPTCHA não carregou
+                var btnText = submitBtn.querySelector('.btn-text');
+                var btnLoading = submitBtn.querySelector('.btn-loading');
+                btnText.classList.add('d-none');
+                btnLoading.classList.remove('d-none');
+                submitBtn.disabled = true;
+            }
+        } else {
+            // Se reCAPTCHA desativado, submeter normalmente
+            var btnText = submitBtn.querySelector('.btn-text');
+            var btnLoading = submitBtn.querySelector('.btn-loading');
+            btnText.classList.add('d-none');
+            btnLoading.classList.remove('d-none');
+            submitBtn.disabled = true;
+        }
     });
 });
 

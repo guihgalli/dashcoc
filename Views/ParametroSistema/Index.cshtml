@@ -106,6 +106,91 @@
                         </div>
 
                         <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-palette me-1"></i>
+                                    Cor do Menu Principal
+                                </label>
+                                <div class="form-control-plaintext">
+                                    <span style="display:inline-block;width:24px;height:24px;background:@Model.CorMenuPrincipal;border-radius:4px;border:1px solid #ccc;"></span>
+                                    @Model.CorMenuPrincipal
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-palette2 me-1"></i>
+                                    Cor da Fonte do Sistema
+                                </label>
+                                <div class="form-control-plaintext">
+                                    <span style="display:inline-block;width:24px;height:24px;background:@Model.CorFonteSistema;border-radius:4px;border:1px solid #ccc;"></span>
+                                    @Model.CorFonteSistema
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-palette me-1"></i>
+                                    Cor de Fundo da Tela de Login
+                                </label>
+                                <div class="form-control-plaintext">
+                                    <span style="display:inline-block;width:24px;height:24px;background:@Model.CorFundoLogin;border-radius:4px;border:1px solid #ccc;"></span>
+                                    @Model.CorFundoLogin
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-palette me-1"></i>
+                                    Cor de Fundo das Telas do Sistema
+                                </label>
+                                <div class="form-control-plaintext">
+                                    <span style="display:inline-block;width:24px;height:24px;background:@Model.CorFundoSistema;border-radius:4px;border:1px solid #ccc;"></span>
+                                    @Model.CorFundoSistema
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-card-text me-1"></i>
+                                    Descrição do Cabeçalho da Tela de Login
+                                </label>
+                                <div class="form-control-plaintext">
+                                    @Model.DescricaoCabecalhoLogin
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-shield-lock me-1"></i>
+                                    Google reCAPTCHA Site Key
+                                </label>
+                                <div class="form-control-plaintext">
+                                    @(string.IsNullOrEmpty(Model.ReCaptchaSiteKey) ? "-" : Model.ReCaptchaSiteKey)
+                                </div>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Chave pública do Google reCAPTCHA v3/invisível
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">
+                                    <i class="bi bi-shield-lock-fill me-1"></i>
+                                    Google reCAPTCHA Secret Key
+                                </label>
+                                <div class="form-control-plaintext">
+                                    @(string.IsNullOrEmpty(Model.ReCaptchaSecretKey) ? "-" : Model.ReCaptchaSecretKey?.Substring(0, Math.Min(6, Model.ReCaptchaSecretKey.Length)) + "... (oculta)")
+                                </div>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Chave secreta do Google reCAPTCHA v3/invisível (parcialmente oculta)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
                             <div class="col-12">
                                 <div class="d-flex justify-content-end">
                                     <a href="@Url.Action("Edit")" class="btn btn-primary">

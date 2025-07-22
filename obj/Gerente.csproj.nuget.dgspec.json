@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/app/coc-solucoes-projetos/Gerente.csproj": {}
+    "C:\\Projeto\\coc-solucoes-projetos\\Gerente.csproj": {}
   },
   "projects": {
-    "/app/coc-solucoes-projetos/Gerente.csproj": {
+    "C:\\Projeto\\coc-solucoes-projetos\\Gerente.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/app/coc-solucoes-projetos/Gerente.csproj",
+        "projectUniqueName": "C:\\Projeto\\coc-solucoes-projetos\\Gerente.csproj",
         "projectName": "Gerente",
-        "projectPath": "/app/coc-solucoes-projetos/Gerente.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/app/coc-solucoes-projetos/obj/",
+        "projectPath": "C:\\Projeto\\coc-solucoes-projetos\\Gerente.csproj",
+        "packagesPath": "C:\\Users\\melim.rafael\\.nuget\\packages\\",
+        "outputPath": "C:\\Projeto\\coc-solucoes-projetos\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\melim.rafael\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -32,12 +32,21 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
             "Npgsql": {
               "target": "Package",
               "version": "[9.0.3, )"
@@ -62,7 +71,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.117/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.412/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

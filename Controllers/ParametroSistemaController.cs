@@ -14,6 +14,7 @@ namespace Gerente.Controllers
         public IActionResult Index()
         {
             var parametros = ObterParametrosSistema();
+            ViewBag.ParametrosSistema = parametros;
             return View(parametros);
         }
 
@@ -28,9 +29,15 @@ namespace Gerente.Controllers
                 {
                     CabecalhoSistema = "DorowCamp",
                     VersaoSistema = "1.0.0",
-                    NomeRodape = "Sistema DorowCamp 2025©"
+                    NomeRodape = "Sistema DorowCamp 2025©",
+                    CorMenuPrincipal = "#212529",
+                    CorFonteSistema = "#ffffff",
+                    CorFundoLogin = "#f8f9fa",
+                    CorFundoSistema = "#ffffff",
+                    DescricaoCabecalhoLogin = ""
                 };
             }
+            ViewBag.ParametrosSistema = parametros;
             return View(parametros);
         }
 
@@ -81,7 +88,7 @@ namespace Gerente.Controllers
                 {
                     conn.Open();
                     using (var cmd = new NpgsqlCommand(
-                        "SELECT id, cabecalho_sistema, versao_sistema, nome_rodape, data_criacao, data_atualizacao FROM parametros_sistema ORDER BY id LIMIT 1", conn))
+                        "SELECT id, cabecalho_sistema, versao_sistema, nome_rodape, cor_menu_principal, cor_fonte_sistema, cor_fundo_login, cor_fundo_sistema, descricao_cabecalho_login, recaptcha_site_key, recaptcha_secret_key, recaptcha_enabled, data_criacao, data_atualizacao FROM parametros_sistema ORDER BY id LIMIT 1", conn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -93,8 +100,16 @@ namespace Gerente.Controllers
                                     CabecalhoSistema = reader.IsDBNull(1) ? "" : reader.GetString(1),
                                     VersaoSistema = reader.IsDBNull(2) ? "" : reader.GetString(2),
                                     NomeRodape = reader.IsDBNull(3) ? "" : reader.GetString(3),
-                                    DataCriacao = reader.IsDBNull(4) ? DateTime.MinValue : reader.GetDateTime(4),
-                                    DataAlteracao = reader.IsDBNull(5) ? DateTime.MinValue : reader.GetDateTime(5)
+                                    CorMenuPrincipal = reader.IsDBNull(4) ? "#212529" : reader.GetString(4),
+                                    CorFonteSistema = reader.IsDBNull(5) ? "#ffffff" : reader.GetString(5),
+                                    CorFundoLogin = reader.IsDBNull(6) ? "#f8f9fa" : reader.GetString(6),
+                                    CorFundoSistema = reader.IsDBNull(7) ? "#ffffff" : reader.GetString(7),
+                                    DescricaoCabecalhoLogin = reader.IsDBNull(8) ? "" : reader.GetString(8),
+                                    ReCaptchaSiteKey = reader.IsDBNull(9) ? null : reader.GetString(9),
+                                    ReCaptchaSecretKey = reader.IsDBNull(10) ? null : reader.GetString(10),
+                                    ReCaptchaEnabled = !reader.IsDBNull(11) && reader.GetBoolean(11),
+                                    DataCriacao = reader.IsDBNull(12) ? DateTime.MinValue : reader.GetDateTime(12),
+                                    DataAlteracao = reader.IsDBNull(13) ? DateTime.MinValue : reader.GetDateTime(13)
                                 };
                             }
                         }
@@ -122,12 +137,20 @@ namespace Gerente.Controllers
             {
                 conn.Open();
                 using (var cmd = new NpgsqlCommand(
-                    @"INSERT INTO parametros_sistema (cabecalho_sistema, versao_sistema, nome_rodape, data_criacao, data_atualizacao) 
-                      VALUES (@cabecalho, @versao, @rodape, @dataCriacao, @dataAlteracao)", conn))
+                    @"INSERT INTO parametros_sistema (cabecalho_sistema, versao_sistema, nome_rodape, cor_menu_principal, cor_fonte_sistema, cor_fundo_login, cor_fundo_sistema, descricao_cabecalho_login, recaptcha_site_key, recaptcha_secret_key, recaptcha_enabled, data_criacao, data_atualizacao) 
+                      VALUES (@cabecalho, @versao, @rodape, @corMenu, @corFonte, @corFundoLogin, @corFundoSistema, @descCabecalhoLogin, @recaptchaSiteKey, @recaptchaSecretKey, @recaptchaEnabled, @dataCriacao, @dataAlteracao)", conn))
                 {
                     cmd.Parameters.AddWithValue("@cabecalho", parametros.CabecalhoSistema);
                     cmd.Parameters.AddWithValue("@versao", parametros.VersaoSistema);
                     cmd.Parameters.AddWithValue("@rodape", parametros.NomeRodape);
+                    cmd.Parameters.AddWithValue("@corMenu", parametros.CorMenuPrincipal);
+                    cmd.Parameters.AddWithValue("@corFonte", parametros.CorFonteSistema);
+                    cmd.Parameters.AddWithValue("@corFundoLogin", parametros.CorFundoLogin);
+                    cmd.Parameters.AddWithValue("@corFundoSistema", parametros.CorFundoSistema);
+                    cmd.Parameters.AddWithValue("@descCabecalhoLogin", parametros.DescricaoCabecalhoLogin);
+                    cmd.Parameters.AddWithValue("@recaptchaSiteKey", (object?)parametros.ReCaptchaSiteKey ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@recaptchaSecretKey", (object?)parametros.ReCaptchaSecretKey ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@recaptchaEnabled", parametros.ReCaptchaEnabled);
                     cmd.Parameters.AddWithValue("@dataCriacao", DateTime.Now);
                     cmd.Parameters.AddWithValue("@dataAlteracao", DateTime.Now);
                     cmd.ExecuteNonQuery();
@@ -149,15 +172,22 @@ namespace Gerente.Controllers
                 conn.Open();
                 using (var cmd = new NpgsqlCommand(
                     @"UPDATE parametros_sistema 
-                      SET cabecalho_sistema = @cabecalho, versao_sistema = @versao, nome_rodape = @rodape, data_atualizacao = @dataAlteracao 
+                      SET cabecalho_sistema = @cabecalho, versao_sistema = @versao, nome_rodape = @rodape, cor_menu_principal = @corMenu, cor_fonte_sistema = @corFonte, cor_fundo_login = @corFundoLogin, cor_fundo_sistema = @corFundoSistema, descricao_cabecalho_login = @descCabecalhoLogin, recaptcha_site_key = @recaptchaSiteKey, recaptcha_secret_key = @recaptchaSecretKey, recaptcha_enabled = @recaptchaEnabled, data_atualizacao = @dataAlteracao 
                       WHERE id = @id", conn))
                 {
                     cmd.Parameters.AddWithValue("@id", parametros.Id);
                     cmd.Parameters.AddWithValue("@cabecalho", parametros.CabecalhoSistema);
                     cmd.Parameters.AddWithValue("@versao", parametros.VersaoSistema);
                     cmd.Parameters.AddWithValue("@rodape", parametros.NomeRodape);
+                    cmd.Parameters.AddWithValue("@corMenu", parametros.CorMenuPrincipal);
+                    cmd.Parameters.AddWithValue("@corFonte", parametros.CorFonteSistema);
+                    cmd.Parameters.AddWithValue("@corFundoLogin", parametros.CorFundoLogin);
+                    cmd.Parameters.AddWithValue("@corFundoSistema", parametros.CorFundoSistema);
+                    cmd.Parameters.AddWithValue("@descCabecalhoLogin", parametros.DescricaoCabecalhoLogin);
+                    cmd.Parameters.AddWithValue("@recaptchaSiteKey", (object?)parametros.ReCaptchaSiteKey ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@recaptchaSecretKey", (object?)parametros.ReCaptchaSecretKey ?? DBNull.Value);
+                    cmd.Parameters.AddWithValue("@recaptchaEnabled", parametros.ReCaptchaEnabled);
                     cmd.Parameters.AddWithValue("@dataAlteracao", DateTime.Now);
-                    
                     int rowsAffected = cmd.ExecuteNonQuery();
                     if (rowsAffected == 0)
                     {

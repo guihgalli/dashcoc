@@ -99,6 +99,23 @@ namespace Gerente.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UsuarioViewModel usuarioViewModel)
         {
+            // Remover validação de senha obrigatória na edição
+            ModelState.Remove("Senha");
+            ModelState.Remove("ConfirmarSenha");
+
+            if (!string.IsNullOrEmpty(usuarioViewModel.Senha))
+            {
+                // Se senha foi informada, validar tamanho e confirmação
+                if (usuarioViewModel.Senha.Length < 6 || usuarioViewModel.Senha.Length > 100)
+                {
+                    ModelState.AddModelError("Senha", "A senha deve ter entre 6 e 100 caracteres.");
+                }
+                if (usuarioViewModel.Senha != usuarioViewModel.ConfirmarSenha)
+                {
+                    ModelState.AddModelError("ConfirmarSenha", "As senhas não coincidem.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
                 try
@@ -115,58 +132,36 @@ namespace Gerente.Controllers
                     var usuarioAtual = ObterUsuarioPorId(usuarioViewModel.Id);
                     bool foiAtivado = usuarioAtual != null && !usuarioAtual.Ativo && usuarioViewModel.Ativo;
 
-                    // Se a senha foi alterada, criar novo hash
                     string? senhaHash = null;
-                    if (!string.IsNullOrEmpty(usuarioViewModel.Senha))
-                    {
-                        senhaHash = HashPassword(usuarioViewModel.Senha);
-                    }
+                    string senhaGeradaParaAtivacao = null;
 
-                    // Atualizar usuário
-                    AtualizarUsuario(usuarioViewModel, senhaHash);
-
-                    // Se o usuário foi ativado, enviar e-mail
                     if (foiAtivado)
                     {
-                        try
-                        {
-                            // Usar a senha do campo "Confirmar Nova Senha" se estiver preenchida
-                            string senhaParaEmail = "";
-                            if (!string.IsNullOrEmpty(usuarioViewModel.ConfirmarSenha))
-                            {
-                                senhaParaEmail = usuarioViewModel.ConfirmarSenha;
-                                Console.WriteLine($"Usando senha do formulário: {senhaParaEmail}");
-                            }
-                            else
-                            {
-                                // Se não houver senha no formulário, gerar uma nova
-                                senhaParaEmail = GerarSenhaTemporaria();
-                                Console.WriteLine($"Gerando nova senha: {senhaParaEmail}");
-                            }
-
-                            // Criptografar a senha antes de enviar no email
-                            string senhaCriptografada = CryptoUtils.Encrypt(senhaParaEmail);
-
-                            await _ativacaoService.EnviarEmailAtivacaoAsync(
-                                usuarioViewModel.Email, 
-                                usuarioViewModel.Nome, 
-                                senhaCriptografada
-                            );
-
-                            TempData["Sucesso"] = "Usuário atualizado com sucesso! E-mail de ativação enviado com a senha definida.";
-                        }
-                        catch (Exception ex)
-                        {
-                            TempData["Sucesso"] = "Usuário atualizado com sucesso!";
-                            TempData["Aviso"] = "E-mail de ativação não foi enviado: " + ex.Message;
-                        }
+                        // Gerar senha aleatória segura para ativação
+                        senhaGeradaParaAtivacao = GerarSenhaTemporaria();
+                        senhaHash = HashPassword(senhaGeradaParaAtivacao);
+                        // Atualizar usuário com a nova senha
+                        AtualizarUsuario(usuarioViewModel, senhaHash);
+                        // Enviar senha gerada por e-mail (em texto claro)
+                        await _ativacaoService.EnviarEmailAtivacaoAsync(
+                            usuarioViewModel.Email,
+                            usuarioViewModel.Nome,
+                            senhaGeradaParaAtivacao
+                        );
+                        TempData["Sucesso"] = "Usuário ativado com sucesso! E-mail enviado com senha de acesso inicial.";
+                        return RedirectToAction("Index");
                     }
                     else
                     {
+                        // Se não for ativação, atualizar normalmente
+                        if (!string.IsNullOrEmpty(usuarioViewModel.Senha))
+                        {
+                            senhaHash = HashPassword(usuarioViewModel.Senha);
+                        }
+                        AtualizarUsuario(usuarioViewModel, senhaHash);
                         TempData["Sucesso"] = "Usuário atualizado com sucesso!";
+                        return RedirectToAction("Index");
                     }
-
-                    return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {

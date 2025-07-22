@@ -6,6 +6,10 @@ using System.Data;
 using Gerente.Services;
 using Gerente.Models;
 using System.Security.Cryptography;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Gerente.Controllers
 {
@@ -23,13 +27,25 @@ namespace Gerente.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            var parametros = ObterParametrosSistema();
+            ViewBag.ParametrosSistema = parametros;
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(string email, string password, bool lembrarSenha = false)
+        public IActionResult Index(string email, string password, bool lembrarSenha = false, string? g_recaptcha_response = null)
         {
+            var parametros = ObterParametrosSistema();
+            if (parametros?.ReCaptchaEnabled == true)
+            {
+                // Validação reCAPTCHA
+                if (string.IsNullOrEmpty(g_recaptcha_response) || !ValidateReCaptcha(g_recaptcha_response, "login").GetAwaiter().GetResult())
+                {
+                    ViewBag.Error = "Falha na validação do reCAPTCHA. Tente novamente.";
+                    return View();
+                }
+            }
             // Verificar se os parâmetros não são null
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -429,8 +445,18 @@ namespace Gerente.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CriarConta(CriarContaViewModel model)
+        public async Task<IActionResult> CriarConta(CriarContaViewModel model, string? g_recaptcha_response)
         {
+            var parametros = ObterParametrosSistema();
+            if (parametros?.ReCaptchaEnabled == true)
+            {
+                // Validação reCAPTCHA
+                if (string.IsNullOrEmpty(g_recaptcha_response) || !await ValidateReCaptcha(g_recaptcha_response, "register"))
+                {
+                    ModelState.AddModelError("", "Falha na validação do reCAPTCHA. Tente novamente.");
+                    return View(model);
+                }
+            }
             Console.WriteLine($"=== CRIAR CONTA INICIADO ===");
             Console.WriteLine($"Email: {model.Email}");
             Console.WriteLine($"Nome: {model.Nome}");
@@ -528,6 +554,64 @@ namespace Gerente.Controllers
             catch
             {
                 return null;
+            }
+        }
+
+        private ParametroSistema? ObterParametrosSistema()
+        {
+            string? connString = _configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connString))
+                return null;
+            try
+            {
+                using (var conn = new NpgsqlConnection(connString))
+                {
+                    conn.Open();
+                    using (var cmd = new NpgsqlCommand(
+                        "SELECT id, cabecalho_sistema, versao_sistema, nome_rodape, cor_menu_principal, cor_fonte_sistema, cor_fundo_login, cor_fundo_sistema, descricao_cabecalho_login, data_criacao, data_atualizacao FROM parametros_sistema ORDER BY id LIMIT 1", conn))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return new ParametroSistema
+                                {
+                                    Id = reader.IsDBNull(0) ? 0 : reader.GetInt32(0),
+                                    CabecalhoSistema = reader.IsDBNull(1) ? "" : reader.GetString(1),
+                                    VersaoSistema = reader.IsDBNull(2) ? "" : reader.GetString(2),
+                                    NomeRodape = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                                    CorMenuPrincipal = reader.IsDBNull(4) ? "#212529" : reader.GetString(4),
+                                    CorFonteSistema = reader.IsDBNull(5) ? "#ffffff" : reader.GetString(5),
+                                    CorFundoLogin = reader.IsDBNull(6) ? "#f8f9fa" : reader.GetString(6),
+                                    CorFundoSistema = reader.IsDBNull(7) ? "#ffffff" : reader.GetString(7),
+                                    DescricaoCabecalhoLogin = reader.IsDBNull(8) ? "" : reader.GetString(8),
+                                    DataCriacao = reader.IsDBNull(9) ? DateTime.MinValue : reader.GetDateTime(9),
+                                    DataAlteracao = reader.IsDBNull(10) ? DateTime.MinValue : reader.GetDateTime(10)
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Retornar null em caso de erro
+            }
+            return null;
+        }
+
+        private async Task<bool> ValidateReCaptcha(string token, string action)
+        {
+            var parametros = ObterParametrosSistema();
+            var secret = parametros?.ReCaptchaSecretKey;
+            if (string.IsNullOrEmpty(secret) || string.IsNullOrEmpty(token))
+                return false;
+            using (var client = new HttpClient())
+            {
+                var response = await client.PostAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={token}", null);
+                var json = await response.Content.ReadAsStringAsync();
+                var result = JObject.Parse(json);
+                return result.Value<bool>("success") && result.Value<string>("action") == action && result.Value<double>("score") > 0.5;
             }
         }
     }

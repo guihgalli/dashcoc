@@ -10,11 +10,22 @@
     <link rel="stylesheet" href="~/Gerente.styles.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .sidebar-link, .sidebar .dropdown-menu .dropdown-item {
+            color: @(ViewBag.ParametrosSistema?.CorFonteSistema ?? "#fff") !important;
+        }
+        .sidebar-link:hover, .sidebar .dropdown-menu .dropdown-item:hover {
+            opacity: 0.8;
+        }
+    </style>
 </head>
-<body>
+@{
+    var parametrosSistema = ViewBag.ParametrosSistema as Gerente.Models.ParametroSistema;
+}
+<body style="@(parametrosSistema != null ? $"background-color: {parametrosSistema.CorFundoSistema}; color: {parametrosSistema.CorFonteSistema};" : "")">
     <div class="d-flex">
         <!-- Sidebar -->
-        <nav class="sidebar bg-dark text-white" id="sidebar">
+        <nav class="sidebar" id="sidebar" style="@(parametrosSistema != null ? $"background-color: {parametrosSistema.CorMenuPrincipal}; color: {parametrosSistema.CorFonteSistema};" : "")">
             <div class="sidebar-header p-3 border-bottom border-secondary">
                 <h4 class="mb-0">
                     <i class="bi bi-gear-fill me-2"></i>
@@ -132,6 +143,16 @@
                                 </div>
                             </li>
                         }
+                    }
+                    <!-- Alterar Senha fora do dropdown -->
+                    @if (Context.Session.GetInt32("UserId").HasValue)
+                    {
+                        <li class="nav-item mb-2">
+                            <a class="nav-link text-white-50 sidebar-link" href="@Url.Action("Index", "AlterarSenha")">
+                                <i class="bi bi-key me-2"></i>
+                                <span class="sidebar-text">Alterar Senha</span>
+                            </a>
+                        </li>
                     }
                 </ul>
             </div>

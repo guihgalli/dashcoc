@@ -69,6 +69,101 @@
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CorMenuPrincipal" class="form-label">
+                                    <i class="bi bi-palette me-1"></i>
+                                    Cor do Menu Principal
+                                </label>
+                                <input asp-for="CorMenuPrincipal" class="form-control" type="color" />
+                                <span asp-validation-for="CorMenuPrincipal" class="text-danger"></span>
+                                <div class="form-text">Cor de fundo do menu lateral principal.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CorFonteSistema" class="form-label">
+                                    <i class="bi bi-palette2 me-1"></i>
+                                    Cor da Fonte do Sistema
+                                </label>
+                                <input asp-for="CorFonteSistema" class="form-control" type="color" />
+                                <span asp-validation-for="CorFonteSistema" class="text-danger"></span>
+                                <div class="form-text">Cor padrão da fonte do sistema.</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CorFundoLogin" class="form-label">
+                                    <i class="bi bi-palette me-1"></i>
+                                    Cor de Fundo da Tela de Login
+                                </label>
+                                <input asp-for="CorFundoLogin" class="form-control" type="color" />
+                                <span asp-validation-for="CorFundoLogin" class="text-danger"></span>
+                                <div class="form-text">Cor de fundo da tela de login.</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CorFundoSistema" class="form-label">
+                                    <i class="bi bi-palette me-1"></i>
+                                    Cor de Fundo das Telas do Sistema
+                                </label>
+                                <input asp-for="CorFundoSistema" class="form-control" type="color" />
+                                <span asp-validation-for="CorFundoSistema" class="text-danger"></span>
+                                <div class="form-text">Cor de fundo das telas após login.</div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="DescricaoCabecalhoLogin" class="form-label">
+                                    <i class="bi bi-card-text me-1"></i>
+                                    Descrição do Cabeçalho da Tela de Login
+                                </label>
+                                <input asp-for="DescricaoCabecalhoLogin" class="form-control" placeholder="Digite a descrição do cabeçalho da tela de login" />
+                                <span asp-validation-for="DescricaoCabecalhoLogin" class="text-danger"></span>
+                                <div class="form-text">Texto exibido abaixo do cabeçalho na tela de login.</div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ReCaptchaSiteKey" class="form-label">
+                                    <i class="bi bi-shield-lock me-1"></i>
+                                    @Html.DisplayNameFor(m => m.ReCaptchaSiteKey)
+                                </label>
+                                <input asp-for="ReCaptchaSiteKey" class="form-control" placeholder="Informe a Site Key do Google reCAPTCHA" />
+                                <span asp-validation-for="ReCaptchaSiteKey" class="text-danger"></span>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Chave pública do Google reCAPTCHA v3/invisível (Site Key).
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ReCaptchaSecretKey" class="form-label">
+                                    <i class="bi bi-shield-lock-fill me-1"></i>
+                                    @Html.DisplayNameFor(m => m.ReCaptchaSecretKey)
+                                </label>
+                                <input asp-for="ReCaptchaSecretKey" class="form-control" placeholder="Informe a Secret Key do Google reCAPTCHA" />
+                                <span asp-validation-for="ReCaptchaSecretKey" class="text-danger"></span>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Chave secreta do Google reCAPTCHA v3/invisível (Secret Key). Não compartilhe esta chave publicamente.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <div class="form-check form-switch">
+                                    <input asp-for="ReCaptchaEnabled" class="form-check-input" type="checkbox" id="ReCaptchaEnabled">
+                                    <label class="form-check-label" for="ReCaptchaEnabled">
+                                        <i class="bi bi-shield-check me-1"></i>
+                                        Ativar Google reCAPTCHA no Login/Cadastro
+                                    </label>
+                                </div>
+                                <div class="form-text">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Se desativado, o reCAPTCHA não será exigido no login/criação de conta.
+                                </div>
+                            </div>
+                        </div>
+
                         @if (Model.Id > 0)
                         {
                             <div class="row">

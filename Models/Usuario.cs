@@ -54,13 +54,11 @@ namespace Gerente.Models
         [Display(Name = "E-mail")]
         public string Email { get; set; } = string.Empty;
         
-        [Required(ErrorMessage = "A senha é obrigatória")]
+        // Senha e confirmação são obrigatórios apenas no cadastro. No Edit, a validação é feita manualmente no controller.
         [StringLength(100, MinimumLength = 6, ErrorMessage = "A senha deve ter entre 6 e 100 caracteres")]
         [Display(Name = "Senha de Acesso")]
         [DataType(DataType.Password)]
         public string Senha { get; set; } = string.Empty;
-        
-        [Required(ErrorMessage = "A confirmação da senha é obrigatória")]
         [Compare("Senha", ErrorMessage = "As senhas não coincidem")]
         [Display(Name = "Confirmar Senha")]
         [DataType(DataType.Password)]
