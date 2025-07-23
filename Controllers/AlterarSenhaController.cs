@@ -93,8 +93,9 @@ namespace Gerente.Controllers
                 }
             }
 
-            TempData["Sucesso"] = "Senha alterada com sucesso!";
-            return RedirectToAction("Index");
+            TempData["Sucesso"] = "Senha alterada com sucesso! Faça login novamente.";
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Login");
         }
 
         private string HashPassword(string password)

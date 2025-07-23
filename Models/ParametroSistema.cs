@@ -21,21 +21,9 @@ namespace Gerente.Models
         [Display(Name = "Nome do Rodapé")]
         public string NomeRodape { get; set; } = string.Empty;
 
-        [Display(Name = "Cor do Menu Principal")]
-        [StringLength(20, ErrorMessage = "A cor deve ter no máximo 20 caracteres")]
-        public string CorMenuPrincipal { get; set; } = "#212529";
-
-        [Display(Name = "Cor da Fonte do Sistema")]
-        [StringLength(20, ErrorMessage = "A cor deve ter no máximo 20 caracteres")]
-        public string CorFonteSistema { get; set; } = "#ffffff";
-
         [Display(Name = "Cor de Fundo da Tela de Login")]
         [StringLength(20, ErrorMessage = "A cor deve ter no máximo 20 caracteres")]
         public string CorFundoLogin { get; set; } = "#f8f9fa";
-
-        [Display(Name = "Cor de Fundo das Telas do Sistema")]
-        [StringLength(20, ErrorMessage = "A cor deve ter no máximo 20 caracteres")]
-        public string CorFundoSistema { get; set; } = "#ffffff";
 
         [Display(Name = "Descrição do Cabeçalho da Tela de Login")]
         [StringLength(255, ErrorMessage = "A descrição deve ter no máximo 255 caracteres")]

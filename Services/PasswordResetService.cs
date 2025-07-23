@@ -41,7 +41,7 @@ namespace Gerente.Services
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -176,12 +176,12 @@ namespace Gerente.Services
             {
                 await conn.OpenAsync();
                 using (var cmd = new NpgsqlCommand(
-                    "INSERT INTO password_reset_tokens (user_id, token, email, expires_at) VALUES (@userId, @token, @email, @expiresAt)", conn))
+                    "INSERT INTO password_reset_tokens (user_id, token, email, expires_at) VALUES (@userId, @token, @email, @expires_at)", conn))
                 {
                     cmd.Parameters.AddWithValue("@userId", userId);
                     cmd.Parameters.AddWithValue("@token", token);
                     cmd.Parameters.AddWithValue("@email", email);
-                    cmd.Parameters.AddWithValue("@expiresAt", expiresAt);
+                    cmd.Parameters.AddWithValue("@expires_at", expiresAt);
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
@@ -221,8 +221,6 @@ namespace Gerente.Services
             }
             catch (Exception ex)
             {
-                // Log do erro (em produção, usar um sistema de logging adequado)
-                Console.WriteLine($"Erro ao enviar e-mail: {ex.Message}");
                 throw;
             }
         }
@@ -320,8 +318,6 @@ namespace Gerente.Services
             catch (Exception ex)
             {
                 // Log do erro (em produção, usar um sistema de logging adequado)
-                Console.WriteLine($"Erro ao obter URL base da aplicação: {ex.Message}");
-                // Fallback para configuração padrão
                 return "http://localhost:5144";
             }
         }

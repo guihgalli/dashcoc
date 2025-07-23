@@ -7,6 +7,14 @@
     var recaptchaEnabled = parametros?.ReCaptchaEnabled ?? false;
 }
 
+@section Styles {
+    <style>
+        body {
+            background: @(string.IsNullOrEmpty(parametros?.CorFundoLogin) ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" : parametros.CorFundoLogin) !important;
+        }
+    </style>
+}
+
 <div class="login-header">
     <h1>Criar Conta de Acesso</h1>
     <p>Preencha os dados para solicitar uma conta no sistema</p>

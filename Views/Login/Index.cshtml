@@ -6,12 +6,20 @@
     var recaptchaEnabled = parametros?.ReCaptchaEnabled ?? false;
 }
 
+@section Styles {
+    <style>
+        body {
+            background: @(string.IsNullOrEmpty(parametros?.CorFundoLogin) ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" : parametros.CorFundoLogin) !important;
+        }
+    </style>
+}
+
 <div class="login-header">
-    <h1>Senior - COC - Projetos</h1>
+    <h1>@(!string.IsNullOrEmpty(parametros?.DescricaoCabecalhoLogin) ? parametros.DescricaoCabecalhoLogin : "Senior - COC - Projetos")</h1>
     <p>Faça login para acessar o sistema</p>
 </div>
 
-<form asp-action="Index" method="post" class="login-form" id="loginForm">
+<form asp-action="Index" method="post" class="login-form" id="loginForm" autocomplete="off">
     @Html.AntiForgeryToken()
     @if (recaptchaEnabled)
     {
@@ -27,20 +35,20 @@
     }
     
     <div class="form-group">
-        <label for="email">
+        <label for="login_user_x">
             <i class="bi bi-envelope me-1"></i>
             E-mail
         </label>
-        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required />
+        <input type="email" id="login_user_x" name="login_user_x" placeholder="Digite seu e-mail" required autocomplete="off" />
         <div class="invalid-feedback">Por favor, informe um e-mail válido.</div>
     </div>
     
     <div class="form-group">
-        <label for="senha">
+        <label for="login_pass_x">
             <i class="bi bi-lock me-1"></i>
             Senha
         </label>
-        <input type="password" id="senha" name="password" placeholder="Digite sua senha" required />
+        <input type="password" id="login_pass_x" name="login_pass_x" placeholder="Digite sua senha" required autocomplete="off" />
         <div class="invalid-feedback">Por favor, informe sua senha.</div>
     </div>
     
@@ -72,6 +80,14 @@
             Criar conta de acesso
         </a>
     </div>
+    <script>
+        (function(){
+            var u = document.getElementById('login_user_x');
+            var p = document.getElementById('login_pass_x');
+            if(u) u.setAttribute('autocomplete','off');
+            if(p) p.setAttribute('autocomplete','off');
+        })();
+    </script>
 </form>
 
 <!-- Área para alertas -->

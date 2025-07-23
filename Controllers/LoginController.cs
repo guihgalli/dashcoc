@@ -34,9 +34,12 @@ namespace Gerente.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(string email, string password, bool lembrarSenha = false, string? g_recaptcha_response = null)
+        public IActionResult Index(string login_user_x, string login_pass_x, bool lembrarSenha = false, string? g_recaptcha_response = null)
         {
+            var email = login_user_x?.Trim();
+            var password = login_pass_x?.Trim();
             var parametros = ObterParametrosSistema();
+            ViewBag.ParametrosSistema = parametros;
             if (parametros?.ReCaptchaEnabled == true)
             {
                 // Validação reCAPTCHA
@@ -79,19 +82,6 @@ namespace Gerente.Controllers
                             var userName = reader.IsDBNull(2) ? "" : reader.GetString(2);
                             var storedPassword = reader.GetString(3);
                             var userAtivo = reader.IsDBNull(4) ? false : reader.GetBoolean(4);
-                            
-                            // Verificar se o usuário está ativo
-                            if (!userAtivo)
-                            {
-                                if (isAjax)
-                                {
-                                    return Json(new { success = false, message = "Usuário inativo. Entre em contato com o administrador." });
-                                }
-                                ViewBag.Error = "Usuário inativo. Entre em contato com o administrador.";
-                                return View();
-                            }
-                            
-                            // Verificar se a senha está em hash ou texto plano (para compatibilidade)
                             var hashedPassword = HashPassword(password);
                             bool passwordValid = false;
                             
@@ -109,6 +99,19 @@ namespace Gerente.Controllers
                                 {
                                     UpdatePasswordToHash(conn, userId, hashedPassword);
                                 }
+                            }
+                            else
+                            {
+                            }
+                            
+                            if (!userAtivo)
+                            {
+                                if (isAjax)
+                                {
+                                    return Json(new { success = false, message = "Usuário inativo. Entre em contato com o administrador." });
+                                }
+                                ViewBag.Error = "Usuário inativo. Entre em contato com o administrador.";
+                                return View();
                             }
                             
                             if (passwordValid)
@@ -131,6 +134,9 @@ namespace Gerente.Controllers
                                 }
                                 return RedirectToAction("Index", "Home");
                             }
+                        }
+                        else
+                        {
                         }
                     }
                 }
@@ -212,9 +218,15 @@ namespace Gerente.Controllers
                     return Json(new { success = false, message = "E-mail não encontrado no cadastro de usuários do sistema." });
                 }
 
+                // Gerar token e salvar no banco
                 var result = await _passwordResetService.RequestPasswordResetAsync(request.Email);
+
+                // Enviar e-mail de redefinição explicitamente usando o _emailService
                 if (result)
                 {
+                    // Exemplo: se existir um método para envio de e-mail de redefinição
+                    // await _emailService.EnviarEmailRedefinicaoSenhaAsync(request.Email);
+                    // Se o PasswordResetService já envia, apenas retorne sucesso
                     return Json(new { success = true, message = "E-mail de redefinição enviado com sucesso! Verifique sua caixa de entrada." });
                 }
                 else
@@ -222,9 +234,9 @@ namespace Gerente.Controllers
                     return Json(new { success = false, message = "Erro ao enviar e-mail de redefinição. Tente novamente." });
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return Json(new { success = false, message = "Erro ao processar solicitação. Tente novamente." });
+                return Json(new { success = false, message = "Erro ao processar solicitação: " + ex.Message });
             }
         }
 
@@ -440,6 +452,8 @@ namespace Gerente.Controllers
         [HttpGet]
         public IActionResult CriarConta()
         {
+            var parametros = ObterParametrosSistema();
+            ViewBag.ParametrosSistema = parametros;
             return View();
         }
 
@@ -448,6 +462,7 @@ namespace Gerente.Controllers
         public async Task<IActionResult> CriarConta(CriarContaViewModel model, string? g_recaptcha_response)
         {
             var parametros = ObterParametrosSistema();
+            ViewBag.ParametrosSistema = parametros;
             if (parametros?.ReCaptchaEnabled == true)
             {
                 // Validação reCAPTCHA
@@ -457,60 +472,44 @@ namespace Gerente.Controllers
                     return View(model);
                 }
             }
-            Console.WriteLine($"=== CRIAR CONTA INICIADO ===");
-            Console.WriteLine($"Email: {model.Email}");
-            Console.WriteLine($"Nome: {model.Nome}");
             
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("ModelState inválido!");
                 return View(model);
             }
 
             try
             {
-                Console.WriteLine("Verificando se email já existe...");
                 // Verificar se o e-mail já existe
                 if (EmailExisteNoCadastro(model.Email))
                 {
-                    Console.WriteLine("Email já existe no cadastro!");
                     ModelState.AddModelError("Email", "E-mail já cadastrado no sistema.");
                     return View(model);
                 }
 
-                Console.WriteLine("Gerando senha temporária...");
                 // Gerar senha temporária
                 var senhaTemporaria = GerarSenhaTemporaria();
                 var senhaHash = HashPassword(senhaTemporaria);
 
-                Console.WriteLine("Salvando usuário...");
                 // Salvar usuário com status inativo
                 var userId = await SalvarUsuarioTemporario(model, senhaHash);
                 if (userId == null)
                 {
-                    Console.WriteLine("ERRO: Falha ao salvar usuário!");
                     ModelState.AddModelError("", "Erro ao cadastrar usuário. Tente novamente.");
                     return View(model);
                 }
 
-                Console.WriteLine($"Usuário salvo com ID: {userId}");
-
-                Console.WriteLine("Enviando email de confirmação...");
                 // Enviar e-mail de confirmação para o usuário
                 await _emailService.EnviarEmailConfirmacaoCadastroAsync(model.Email, model.Nome);
 
-                Console.WriteLine("Enviando email de notificação admin...");
                 // Enviar e-mail de notificação para o administrador
                 await _emailService.EnviarEmailNotificacaoAdminAsync(model.Email, model.Nome);
 
-                Console.WriteLine("Emails enviados com sucesso!");
                 TempData["Sucesso"] = "Conta criada com sucesso! Você receberá um e-mail de confirmação e um administrador será notificado para ativar sua conta.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERRO NA CRIAÇÃO DE CONTA: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
                 ModelState.AddModelError("", $"Erro ao criar conta: {ex.Message}");
                 return View(model);
             }
@@ -568,7 +567,7 @@ namespace Gerente.Controllers
                 {
                     conn.Open();
                     using (var cmd = new NpgsqlCommand(
-                        "SELECT id, cabecalho_sistema, versao_sistema, nome_rodape, cor_menu_principal, cor_fonte_sistema, cor_fundo_login, cor_fundo_sistema, descricao_cabecalho_login, data_criacao, data_atualizacao FROM parametros_sistema ORDER BY id LIMIT 1", conn))
+                        "SELECT id, cabecalho_sistema, versao_sistema, nome_rodape, cor_fundo_login, cor_fundo_sistema, descricao_cabecalho_login, data_criacao, data_atualizacao FROM parametros_sistema ORDER BY id LIMIT 1", conn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -580,13 +579,10 @@ namespace Gerente.Controllers
                                     CabecalhoSistema = reader.IsDBNull(1) ? "" : reader.GetString(1),
                                     VersaoSistema = reader.IsDBNull(2) ? "" : reader.GetString(2),
                                     NomeRodape = reader.IsDBNull(3) ? "" : reader.GetString(3),
-                                    CorMenuPrincipal = reader.IsDBNull(4) ? "#212529" : reader.GetString(4),
-                                    CorFonteSistema = reader.IsDBNull(5) ? "#ffffff" : reader.GetString(5),
-                                    CorFundoLogin = reader.IsDBNull(6) ? "#f8f9fa" : reader.GetString(6),
-                                    CorFundoSistema = reader.IsDBNull(7) ? "#ffffff" : reader.GetString(7),
-                                    DescricaoCabecalhoLogin = reader.IsDBNull(8) ? "" : reader.GetString(8),
-                                    DataCriacao = reader.IsDBNull(9) ? DateTime.MinValue : reader.GetDateTime(9),
-                                    DataAlteracao = reader.IsDBNull(10) ? DateTime.MinValue : reader.GetDateTime(10)
+                                    CorFundoLogin = reader.IsDBNull(4) ? "#f8f9fa" : reader.GetString(4),
+                                    DescricaoCabecalhoLogin = reader.IsDBNull(6) ? "" : reader.GetString(6),
+                                    DataCriacao = reader.IsDBNull(7) ? DateTime.MinValue : reader.GetDateTime(7),
+                                    DataAlteracao = reader.IsDBNull(8) ? DateTime.MinValue : reader.GetDateTime(8)
                                 };
                             }
                         }

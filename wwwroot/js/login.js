@@ -107,8 +107,8 @@ function handleCheckboxChange() {
     console.log('handleCheckboxChange chamada');
     
     const checkbox = document.getElementById('salvarCredenciais');
-    const emailInput = document.getElementById('email');
-    const senhaInput = document.getElementById('senha');
+    const emailInput = document.getElementById('login_user_x');
+    const senhaInput = document.getElementById('login_pass_x');
     
     if (!checkbox) {
         console.error('Checkbox não encontrado');
@@ -172,8 +172,8 @@ function inicializarCredenciaisSalvas() {
     }
     
     const credenciais = carregarCredenciaisLocalStorage();
-    const emailInput = document.getElementById('email');
-    const senhaInput = document.getElementById('senha');
+    const emailInput = document.getElementById('login_user_x');
+    const senhaInput = document.getElementById('login_pass_x');
     const checkbox = document.getElementById('salvarCredenciais');
     
     if (!emailInput) {
@@ -324,8 +324,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
                 // Adicionar event listeners para os campos de e-mail e senha
-        const emailInput = document.getElementById('email');
-        const senhaInput = document.getElementById('senha');
+        const emailInput = document.getElementById('login_user_x');
+        const senhaInput = document.getElementById('login_pass_x');
         
         // Event listeners para salvar credenciais quando campos mudarem
         if (emailInput) {
@@ -405,7 +405,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ email: email })
+                    body: JSON.stringify({ Email: email })
                 });
                 
                 const result = await response.json();
@@ -452,8 +452,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
-            const emailInput = document.getElementById('email');
-            const senhaInput = document.getElementById('senha');
+            const emailInput = document.getElementById('login_user_x');
+            const senhaInput = document.getElementById('login_pass_x');
             const loginBtn = document.getElementById('loginBtn');
             
             // Validações básicas
