@@ -21,10 +21,7 @@
 
 <form asp-action="Index" method="post" class="login-form" id="loginForm" autocomplete="off">
     @Html.AntiForgeryToken()
-    @if (recaptchaEnabled)
-    {
-        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
-    }
+    <input type="hidden" id="g_recaptcha_response" name="g_recaptcha_response" />
     @if (ViewBag.Error != null)
     {
         <script>

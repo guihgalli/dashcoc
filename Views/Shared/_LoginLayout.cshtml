@@ -36,82 +36,14 @@
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- <script src="~/lib/jquery/dist/jquery.min.js"></script> -->
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <!-- <script>
         // Validação e funcionalidades do formulário de login
-        $(document).ready(function() {
-            const form = $('#loginForm');
-            const loginBtn = $('#loginBtn');
-            const emailInput = $('#email');
-            const senhaInput = $('#senha');
-            
-            // Validação em tempo real
-            emailInput.on('input', function() {
-                validateField($(this), $(this).val().trim() !== '');
-            });
-            
-            senhaInput.on('input', function() {
-                validateField($(this), $(this).val().trim() !== '');
-            });
-            
-            // Validação no submit
-            form.on('submit', function(e) {
-                let isValid = true;
-                
-                // Validar e-mail
-                if (emailInput.val().trim() === '') {
-                    validateField(emailInput, false);
-                    isValid = false;
-                } else {
-                    validateField(emailInput, true);
-                }
-                
-                // Validar senha
-                if (senhaInput.val().trim() === '') {
-                    validateField(senhaInput, false);
-                    isValid = false;
-                } else {
-                    validateField(senhaInput, true);
-                }
-                
-                if (!isValid) {
-                    e.preventDefault();
-                    return false;
-                }
-                
-                // Mostrar loading
-                loginBtn.addClass('loading');
-                loginBtn.prop('disabled', true);
-                
-                return true;
-            });
-            
-            function validateField(field, isValid) {
-                if (isValid) {
-                    field.removeClass('is-invalid').addClass('is-valid');
-                } else {
-                    field.removeClass('is-valid').addClass('is-invalid');
-                }
-            }
-            
-            // Foco automático no primeiro campo
-            emailInput.focus();
-            
-            // Suporte a Enter para navegar entre campos
-            emailInput.on('keypress', function(e) {
-                if (e.which === 13) {
-                    senhaInput.focus();
-                }
-            });
-            
-            senhaInput.on('keypress', function(e) {
-                if (e.which === 13) {
-                    form.submit();
-                }
-            });
-        });
-    </script>
+        // $(document).ready(function() {
+        //     ...
+        // });
+    </script> -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html> 

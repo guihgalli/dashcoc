@@ -2,6 +2,7 @@ using Gerente.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+Console.WriteLine("=== INICIANDO APLICAÇÃO ===");
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -71,6 +72,7 @@ app.UseAuthorization();
 // Middleware para redirecionar para login se não houver sessão ativa
 app.Use(async (context, next) =>
 {
+    context.Response.Headers.Add("Content-Security-Policy", "frame-ancestors 'self' https://www.google.com");
     var path = context.Request.Path.Value?.ToLower();
     if (!string.IsNullOrEmpty(path) && 
         !path.StartsWith("/login") && 

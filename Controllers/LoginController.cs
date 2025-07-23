@@ -36,10 +36,13 @@ namespace Gerente.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Index(string login_user_x, string login_pass_x, bool lembrarSenha = false, string? g_recaptcha_response = null)
         {
+            Console.WriteLine("[DEBUG] Entrou no método Index POST do LoginController");
             var email = login_user_x?.Trim();
             var password = login_pass_x?.Trim();
             var parametros = ObterParametrosSistema();
             ViewBag.ParametrosSistema = parametros;
+            Console.WriteLine($"[DEBUG] parametros?.ReCaptchaEnabled: {parametros?.ReCaptchaEnabled}");
+            Console.WriteLine($"[DEBUG] g_recaptcha_response: {g_recaptcha_response}");
             if (parametros?.ReCaptchaEnabled == true)
             {
                 // Validação reCAPTCHA
@@ -567,7 +570,7 @@ namespace Gerente.Controllers
                 {
                     conn.Open();
                     using (var cmd = new NpgsqlCommand(
-                        "SELECT id, cabecalho_sistema, versao_sistema, nome_rodape, cor_fundo_login, cor_fundo_sistema, descricao_cabecalho_login, data_criacao, data_atualizacao FROM parametros_sistema ORDER BY id LIMIT 1", conn))
+                        "SELECT id, cabecalho_sistema, versao_sistema, nome_rodape, cor_fundo_login, cor_fundo_sistema, descricao_cabecalho_login, recaptcha_site_key, recaptcha_secret_key, recaptcha_enabled, data_criacao, data_atualizacao FROM parametros_sistema ORDER BY id LIMIT 1", conn))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -581,8 +584,11 @@ namespace Gerente.Controllers
                                     NomeRodape = reader.IsDBNull(3) ? "" : reader.GetString(3),
                                     CorFundoLogin = reader.IsDBNull(4) ? "#f8f9fa" : reader.GetString(4),
                                     DescricaoCabecalhoLogin = reader.IsDBNull(6) ? "" : reader.GetString(6),
-                                    DataCriacao = reader.IsDBNull(7) ? DateTime.MinValue : reader.GetDateTime(7),
-                                    DataAlteracao = reader.IsDBNull(8) ? DateTime.MinValue : reader.GetDateTime(8)
+                                    ReCaptchaSiteKey = reader.IsDBNull(7) ? null : reader.GetString(7),
+                                    ReCaptchaSecretKey = reader.IsDBNull(8) ? null : reader.GetString(8),
+                                    ReCaptchaEnabled = !reader.IsDBNull(9) && reader.GetBoolean(9),
+                                    DataCriacao = reader.IsDBNull(10) ? DateTime.MinValue : reader.GetDateTime(10),
+                                    DataAlteracao = reader.IsDBNull(11) ? DateTime.MinValue : reader.GetDateTime(11)
                                 };
                             }
                         }
@@ -598,16 +604,31 @@ namespace Gerente.Controllers
 
         private async Task<bool> ValidateReCaptcha(string token, string action)
         {
+            Console.WriteLine("[reCAPTCHA] Início da validação do reCAPTCHA.");
+            Console.WriteLine($"[reCAPTCHA] Token recebido do cliente: {token}");
             var parametros = ObterParametrosSistema();
             var secret = parametros?.ReCaptchaSecretKey;
+            Console.WriteLine($"[reCAPTCHA] Valor de secret: {secret}");
             if (string.IsNullOrEmpty(secret) || string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine($"[reCAPTCHA] Secret ou token ausente. Secret: {secret}, Token: {token}");
                 return false;
+            }
             using (var client = new HttpClient())
             {
-                var response = await client.PostAsync($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={token}", null);
+                var endpoint = $"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={token}";
+                Console.WriteLine($"[reCAPTCHA] Endpoint gerado para requisição: {endpoint}");
+                var response = await client.PostAsync(endpoint, null);
                 var json = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"[reCAPTCHA] Resposta recebida do Google (JSON): {json}");
                 var result = JObject.Parse(json);
-                return result.Value<bool>("success") && result.Value<string>("action") == action && result.Value<double>("score") > 0.5;
+                bool sucesso = result.Value<bool>("success") && result.Value<string>("action") == action && result.Value<double>("score") > 0.5;
+                Console.WriteLine($"[reCAPTCHA] Resultado final da validação: {(sucesso ? "SUCESSO" : "FALHA")}");
+                if (!sucesso)
+                {
+                    Console.WriteLine($"[reCAPTCHA] Motivo da falha: success={result.Value<bool>("success")}, action={result.Value<string>("action")}, score={result.Value<double>("score")}");
+                }
+                return sucesso;
             }
         }
     }

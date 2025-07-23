@@ -1,3 +1,4 @@
+console.log('[DEBUG] login.js carregado');
 // =====================================================
 // FUNCIONALIDADE "SALVAR CREDENCIAIS" COM LOCALSTORAGE
 // =====================================================
@@ -452,6 +453,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
+            console.log('[DEBUG] HTML do formulário:', loginForm.innerHTML);
+            console.log('[DEBUG] Submit do login iniciado');
+            console.log('[DEBUG] window.grecaptcha:', window.grecaptcha);
+            console.log('[DEBUG] window.recaptchaSiteKey:', window.recaptchaSiteKey);
+            console.log('[DEBUG] Campo hidden:', document.getElementById('g_recaptcha_response'));
             const emailInput = document.getElementById('login_user_x');
             const senhaInput = document.getElementById('login_pass_x');
             const loginBtn = document.getElementById('loginBtn');
@@ -484,8 +490,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     grecaptcha.ready(function() {
                         grecaptcha.execute(window.recaptchaSiteKey, { action: 'login' }).then(function(token) {
-                            document.getElementById('g-recaptcha-response').value = token;
-                            loginForm.submit();
+                            var recaptchaInput = document.getElementById('g_recaptcha_response');
+                            if (recaptchaInput) {
+                                console.log('[DEBUG] Campo hidden encontrado, preenchendo token e submetendo formulário.');
+                                recaptchaInput.value = token;
+                                // Remover event listener para evitar submit duplo
+                                loginForm.removeEventListener('submit', arguments.callee);
+                                loginForm.submit();
+                            } else {
+                                console.error('[reCAPTCHA] Campo hidden g_recaptcha_response não encontrado!');
+                                return; // Impede qualquer ação se o campo não existe
+                            }
                         });
                     });
                 } else {
