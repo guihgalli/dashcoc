@@ -41,11 +41,12 @@
     </div>
     
     <div class="form-group">
-        <label for="login_pass_x">
+        <label for="i_x2">
             <i class="bi bi-lock me-1"></i>
             Senha
         </label>
-        <input type="password" id="login_pass_x" name="login_pass_x" placeholder="Digite sua senha" required autocomplete="off" />
+        <input type="password" id="i_x2" placeholder="Digite sua senha" required autocomplete="off" />
+        <input type="hidden" id="i_x2_encoded" name="i_x2" />
         <div class="invalid-feedback">Por favor, informe sua senha.</div>
     </div>
     
@@ -80,9 +81,18 @@
     <script>
         (function(){
             var u = document.getElementById('login_user_x');
-            var p = document.getElementById('login_pass_x');
+            var p = document.getElementById('i_x2');
+            var pHidden = document.getElementById('i_x2_encoded');
             if(u) u.setAttribute('autocomplete','off');
             if(p) p.setAttribute('autocomplete','off');
+            // Ofuscação Base64 para o valor da senha
+            if(p && pHidden) {
+                p.addEventListener('input', function() {
+                    this.setAttribute('data-value', btoa(this.value));
+                    // Atualizar o campo hidden em tempo real
+                    pHidden.value = btoa(this.value);
+                });
+            }
         })();
     </script>
 </form>
@@ -131,6 +141,264 @@
 </div>
 
 <script src="~/js/login.js"></script> 
+
+<!-- PROTEÇÃO CONTRA DEVTOOLS - APENAS NA TELA DE LOGIN -->
+<script>
+(function() {
+    'use strict';
+    
+    // Variáveis para controle da proteção
+    let devToolsDetected = false;
+    let devToolsCheckInterval;
+    let lastWindowSize = { width: window.innerWidth, height: window.innerHeight };
+    
+    // Função para detectar se DevTools está aberto
+    function detectDevTools() {
+        // Método 1: Verificar mudança no tamanho da janela
+        const currentSize = { width: window.innerWidth, height: window.innerHeight };
+        const sizeDiff = Math.abs(currentSize.width - lastWindowSize.width) + 
+                        Math.abs(currentSize.height - lastWindowSize.height);
+        
+        // Método 2: Verificar se console está aberto (Firefox)
+        const consoleOpen = window.console && (window.console.firebug || window.console.exception);
+        
+        // Método 3: Verificar se debugger está ativo
+        const debuggerActive = window.outerHeight - window.innerHeight > 200 || 
+                              window.outerWidth - window.innerWidth > 200;
+        
+        // Método 4: Verificar se elementos de DevTools estão presentes
+        const devToolsElements = document.querySelectorAll('*[class*="devtools"], *[id*="devtools"]');
+        
+        if (sizeDiff > 50 || consoleOpen || debuggerActive || devToolsElements.length > 0) {
+            return true;
+        }
+        
+        lastWindowSize = currentSize;
+        return false;
+    }
+    
+    // Função para bloquear ações do usuário
+    function blockUserActions() {
+        if (devToolsDetected) return;
+        
+        devToolsDetected = true;
+        
+        // Limpar a tela
+        document.body.innerHTML = `
+            <div style="
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 999999;
+                font-family: Arial, sans-serif;
+                color: white;
+                text-align: center;
+            ">
+                <div>
+                    <h1 style="font-size: 2.5em; margin-bottom: 20px;">⚠️ Acesso Negado</h1>
+                    <p style="font-size: 1.2em; margin-bottom: 30px;">
+                        O uso de ferramentas de desenvolvedor não é permitido nesta página.
+                    </p>
+                    <p style="font-size: 1em; opacity: 0.8;">
+                        Feche as ferramentas de desenvolvedor e recarregue a página para continuar.
+                    </p>
+                    <button onclick="location.reload()" style="
+                        margin-top: 30px;
+                        padding: 12px 24px;
+                        background: rgba(255,255,255,0.2);
+                        border: 2px solid white;
+                        color: white;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 1em;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.background='rgba(255,255,255,0.3)'" 
+                       onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                        Recarregar Página
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Parar verificação periódica
+        if (devToolsCheckInterval) {
+            clearInterval(devToolsCheckInterval);
+        }
+    }
+    
+    // Função para verificar periodicamente se DevTools está aberto
+    function startDevToolsMonitoring() {
+        devToolsCheckInterval = setInterval(() => {
+            if (detectDevTools()) {
+                blockUserActions();
+            }
+        }, 1000); // Verificar a cada segundo
+    }
+    
+    // Bloquear clique com botão direito
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    });
+    
+    // Bloquear atalhos de teclado
+    document.addEventListener('keydown', function(e) {
+        // F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+I (Chrome DevTools)
+        if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+J (Chrome Console)
+        if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+U (Ver código fonte)
+        if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+C (Chrome Elements)
+        if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+M (Chrome Device Mode)
+        if (e.ctrlKey && e.shiftKey && e.key === 'M') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+E (Firefox Network)
+        if (e.ctrlKey && e.shiftKey && e.key === 'E') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+K (Firefox Console)
+        if (e.ctrlKey && e.shiftKey && e.key === 'K') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    });
+    
+    // Bloquear atalhos de teclado no nível da janela
+    window.addEventListener('keydown', function(e) {
+        // F12
+        if (e.key === 'F12') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+I
+        if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+Shift+J
+        if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Ctrl+U
+        if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    });
+    
+    // Iniciar monitoramento quando o DOM estiver carregado
+    document.addEventListener('DOMContentLoaded', function() {
+        // Aguardar um pouco para garantir que tudo esteja carregado
+        setTimeout(() => {
+            startDevToolsMonitoring();
+        }, 2000);
+    });
+    
+    // Verificação inicial
+    setTimeout(() => {
+        if (detectDevTools()) {
+            blockUserActions();
+        }
+    }, 1000);
+    
+    // Proteção adicional: detectar mudanças na janela
+    window.addEventListener('resize', function() {
+        setTimeout(() => {
+            if (detectDevTools()) {
+                blockUserActions();
+            }
+        }, 100);
+    });
+    
+    // Proteção contra console.log
+    const originalConsoleLog = console.log;
+    console.log = function() {
+        // Permitir apenas logs específicos do sistema
+        const args = Array.prototype.slice.call(arguments);
+        const message = args.join(' ');
+        
+        // Permitir logs que contêm palavras-chave específicas do sistema
+        if (message.includes('[DEBUG]') || 
+            message.includes('login.js') || 
+            message.includes('recaptcha') ||
+            message.includes('DOM carregado') ||
+            message.includes('Checkbox encontrado')) {
+            originalConsoleLog.apply(console, arguments);
+        }
+        // Bloquear outros logs
+    };
+    
+    // Proteção contra console.error (permitir apenas erros do sistema)
+    const originalConsoleError = console.error;
+    console.error = function() {
+        const args = Array.prototype.slice.call(arguments);
+        const message = args.join(' ');
+        
+        // Permitir apenas erros específicos do sistema
+        if (message.includes('localStorage') || 
+            message.includes('Checkbox não encontrado') ||
+            message.includes('Campo') ||
+            message.includes('reCAPTCHA')) {
+            originalConsoleError.apply(console, arguments);
+        }
+        // Bloquear outros erros
+    };
+    
+})();
+</script>
+
 @if (recaptchaEnabled)
 {
     <script src="https://www.google.com/recaptcha/api.js?render=@siteKey"></script>

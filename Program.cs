@@ -3,6 +3,13 @@ using Gerente.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 Console.WriteLine("=== INICIANDO APLICAÇÃO ===");
+
+// Configurar logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

@@ -109,7 +109,7 @@ function handleCheckboxChange() {
     
     const checkbox = document.getElementById('salvarCredenciais');
     const emailInput = document.getElementById('login_user_x');
-    const senhaInput = document.getElementById('login_pass_x');
+    const senhaInput = document.getElementById('i_x2');
     
     if (!checkbox) {
         console.error('Checkbox não encontrado');
@@ -136,7 +136,7 @@ function handleCheckboxChange() {
     if (checkbox.checked) {
         // Checkbox marcado - salvar credenciais
         const email = emailInput.value.trim();
-        const senha = senhaInput.value;
+        const senha = btoa(senhaInput.value);
         
         console.log('Tentando salvar credenciais:', { email: email ? 'preenchido' : 'vazio', senha: senha ? 'preenchido' : 'vazio' });
         
@@ -174,7 +174,7 @@ function inicializarCredenciaisSalvas() {
     
     const credenciais = carregarCredenciaisLocalStorage();
     const emailInput = document.getElementById('login_user_x');
-    const senhaInput = document.getElementById('login_pass_x');
+    const senhaInput = document.getElementById('i_x2');
     const checkbox = document.getElementById('salvarCredenciais');
     
     if (!emailInput) {
@@ -200,6 +200,12 @@ function inicializarCredenciaisSalvas() {
         // Preencher campos
         emailInput.value = credenciais.email;
         senhaInput.value = credenciais.senha;
+        
+        // Atualizar campo hidden com a senha ofuscada
+        const senhaHiddenInput = document.getElementById('i_x2_encoded');
+        if (senhaHiddenInput) {
+            senhaHiddenInput.value = btoa(credenciais.senha);
+        }
         
         // Marcar checkbox
         checkbox.checked = true;
@@ -326,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
                 // Adicionar event listeners para os campos de e-mail e senha
         const emailInput = document.getElementById('login_user_x');
-        const senhaInput = document.getElementById('login_pass_x');
+        const senhaInput = document.getElementById('i_x2');
         
         // Event listeners para salvar credenciais quando campos mudarem
         if (emailInput) {
@@ -334,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const checkbox = document.getElementById('salvarCredenciais');
                 if (checkbox && checkbox.checked) {
                     const email = this.value.trim();
-                    const senha = senhaInput ? senhaInput.value : '';
+                    const senha = senhaInput ? btoa(senhaInput.value) : '';
                     if (email && senha) {
                         salvarCredenciaisLocalStorage(email, senha);
                     }
@@ -347,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const checkbox = document.getElementById('salvarCredenciais');
                 if (checkbox && checkbox.checked) {
                     const email = emailInput ? emailInput.value.trim() : '';
-                    const senha = this.value;
+                    const senha = btoa(this.value);
                     if (email && senha) {
                         salvarCredenciaisLocalStorage(email, senha);
                     }
@@ -453,13 +459,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', function(e) {
+            // Prevenir o submit padrão para aplicar ofuscação
+            e.preventDefault();
             console.log('[DEBUG] HTML do formulário:', loginForm.innerHTML);
             console.log('[DEBUG] Submit do login iniciado');
             console.log('[DEBUG] window.grecaptcha:', window.grecaptcha);
             console.log('[DEBUG] window.recaptchaSiteKey:', window.recaptchaSiteKey);
             console.log('[DEBUG] Campo hidden:', document.getElementById('g_recaptcha_response'));
             const emailInput = document.getElementById('login_user_x');
-            const senhaInput = document.getElementById('login_pass_x');
+            const senhaInput = document.getElementById('i_x2');
             const loginBtn = document.getElementById('loginBtn');
             
             // Validações básicas
@@ -480,22 +488,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (!isValid) {
-                e.preventDefault();
                 showMessage('error', 'Por favor, preencha todos os campos obrigatórios.', 5000);
                 return;
             }
+            
+            // Ofuscar a senha antes do envio para evitar que apareça em texto puro no payload
+            if (senhaInput && senhaInput.value) {
+                const senhaOriginal = senhaInput.value;
+                const senhaOfuscada = btoa(senhaInput.value);
+                // Usar o campo hidden para enviar a senha ofuscada
+                const senhaHiddenInput = document.getElementById('i_x2_encoded');
+                if (senhaHiddenInput) {
+                    senhaHiddenInput.value = senhaOfuscada;
+                    console.log('[DEBUG] Senha ofuscada:', { original: senhaOriginal, ofuscada: senhaOfuscada });
+                }
+            }
+            
             // Integração reCAPTCHA v3 condicional
             if (window.recaptchaEnabled) {
                 if (window.grecaptcha && window.recaptchaSiteKey) {
-                    e.preventDefault();
                     grecaptcha.ready(function() {
                         grecaptcha.execute(window.recaptchaSiteKey, { action: 'login' }).then(function(token) {
                             var recaptchaInput = document.getElementById('g_recaptcha_response');
                             if (recaptchaInput) {
                                 console.log('[DEBUG] Campo hidden encontrado, preenchendo token e submetendo formulário.');
                                 recaptchaInput.value = token;
-                                // Remover event listener para evitar submit duplo
-                                loginForm.removeEventListener('submit', arguments.callee);
+                                // Garantir que a senha esteja ofuscada antes do submit final
+                                const senhaInputFinal = document.getElementById('i_x2');
+                                const senhaHiddenInputFinal = document.getElementById('i_x2_encoded');
+                                if (senhaInputFinal && senhaInputFinal.value && senhaHiddenInputFinal) {
+                                    // Ofuscar a senha no campo hidden
+                                    senhaHiddenInputFinal.value = btoa(senhaInputFinal.value);
+                                }
+                                // Mostrar loading
+                                loginBtn.classList.add('loading');
+                                loginBtn.disabled = true;
+                                // Submeter formulário
                                 loginForm.submit();
                             } else {
                                 console.error('[reCAPTCHA] Campo hidden g_recaptcha_response não encontrado!');
@@ -507,12 +535,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Mostrar loading normalmente se reCAPTCHA não carregou
                     loginBtn.classList.add('loading');
                     loginBtn.disabled = true;
+                    // Submeter formulário sem reCAPTCHA
+                    loginForm.submit();
                 }
             } else {
                 // Se reCAPTCHA desativado, submeter normalmente
                 // Mostrar loading
                 loginBtn.classList.add('loading');
                 loginBtn.disabled = true;
+                // Submeter formulário
+                loginForm.submit();
             }
         });
     }

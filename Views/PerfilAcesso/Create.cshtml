@@ -21,6 +21,10 @@
             <div class="card">
                 <div class="card-body">
                     <form asp-action="Create" method="post">
+                        <!-- Campos hidden para garantir que os valores sejam enviados -->
+                        <input type="hidden" asp-for="AcessoProjetos" value="false" />
+                        <input type="hidden" asp-for="AcessoBacklogArquitetura" value="false" />
+                        
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -101,6 +105,8 @@
                                         </h6>
                                     </div>
                                     <div class="card-body">
+                                        <!-- Projetos desabilitado -->
+                                        <!--
                                         <div class="form-check form-switch mb-2">
                                             <input asp-for="AcessoProjetos" class="form-check-input" />
                                             <label asp-for="AcessoProjetos" class="form-check-label">
@@ -108,6 +114,9 @@
                                                 Projetos
                                             </label>
                                         </div>
+                                        -->
+                                        <!-- Backlog Arquitetura e Projetos desabilitado -->
+                                        <!--
                                         <div class="form-check form-switch mb-2">
                                             <input asp-for="AcessoBacklogArquitetura" class="form-check-input" />
                                             <label asp-for="AcessoBacklogArquitetura" class="form-check-label">
@@ -115,6 +124,7 @@
                                                 Backlog Arquitetura e Projetos
                                             </label>
                                         </div>
+                                        -->
                                         <div class="form-check form-switch mb-2">
                                             <input asp-for="AcessoRelatorios" class="form-check-input" />
                                             <label asp-for="AcessoRelatorios" class="form-check-label">
@@ -164,14 +174,13 @@
                             <i class="bi bi-people text-info me-2"></i>
                             <strong>Usuários:</strong> Gerenciamento de usuários
                         </li>
-                        <li class="mb-2">
-                            <i class="bi bi-folder text-warning me-2"></i>
-                            <strong>Projetos:</strong> Criação e gestão de projetos
-                        </li>
+                        <!-- Backlog Arquitetura e Projetos removido -->
+                        <!--
                         <li class="mb-2">
                             <i class="bi bi-kanban text-info me-2"></i>
                             <strong>Backlog Arquitetura e Projetos:</strong> Cadastro de Backlogs
                         </li>
+                        -->
                         <li class="mb-2">
                             <i class="bi bi-graph-up text-secondary me-2"></i>
                             <strong>Relatórios:</strong> Visualização de relatórios
@@ -242,7 +251,13 @@
                 const checkboxes = document.querySelectorAll('input[type="checkbox"][name*="Acesso"]:not(#acessoTotal)');
                 checkboxes.forEach(cb => {
                     cb.checked = true;
-                    cb.disabled = false; // Temporariamente habilitar para envio
+                    cb.disabled = false; // Habilitar para envio
+                });
+            } else {
+                // Se Acesso Total não está marcado, garantir que todos os campos estejam habilitados
+                const checkboxes = document.querySelectorAll('input[type="checkbox"][name*="Acesso"]:not(#acessoTotal)');
+                checkboxes.forEach(cb => {
+                    cb.disabled = false; // Habilitar para envio
                 });
             }
             

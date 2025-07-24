@@ -34,11 +34,27 @@ namespace Gerente.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Index(string login_user_x, string login_pass_x, bool lembrarSenha = false, string? g_recaptcha_response = null)
+        public IActionResult Index(string login_user_x, string i_x2, bool lembrarSenha = false, string? g_recaptcha_response = null)
         {
             Console.WriteLine("[DEBUG] Entrou no método Index POST do LoginController");
             var email = login_user_x?.Trim();
-            var password = login_pass_x?.Trim();
+            var password = i_x2?.Trim();
+            
+            // Decodificar a senha Base64 se não estiver vazia
+            if (!string.IsNullOrEmpty(password))
+            {
+                try
+                {
+                    var passwordBytes = System.Convert.FromBase64String(password);
+                    password = System.Text.Encoding.UTF8.GetString(passwordBytes);
+                    Console.WriteLine("[DEBUG] Senha decodificada com sucesso");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[DEBUG] Erro ao decodificar senha Base64: {ex.Message}");
+                    // Se não conseguir decodificar, usar a senha como está (para compatibilidade)
+                }
+            }
             var parametros = ObterParametrosSistema();
             ViewBag.ParametrosSistema = parametros;
             Console.WriteLine($"[DEBUG] parametros?.ReCaptchaEnabled: {parametros?.ReCaptchaEnabled}");
@@ -58,6 +74,9 @@ namespace Gerente.Controllers
                 ViewBag.Error = "E-mail e senha são obrigatórios.";
                 return View();
             }
+            
+            Console.WriteLine($"[DEBUG] Email: {email}");
+            Console.WriteLine($"[DEBUG] Senha (após decodificação): {password}");
 
             // Verificar se é uma requisição AJAX
             bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
@@ -335,6 +354,8 @@ namespace Gerente.Controllers
                 return View("Index");
             }
 
+            var parametros = ObterParametrosSistema();
+            ViewBag.ParametrosSistema = parametros;
             ViewBag.Token = token;
             return View();
         }
@@ -455,7 +476,14 @@ namespace Gerente.Controllers
         [HttpGet]
         public IActionResult CriarConta()
         {
+            Console.WriteLine("=== DEBUG: CriarConta GET ===");
             var parametros = ObterParametrosSistema();
+            Console.WriteLine($"parametros obtidos: {parametros != null}");
+            if (parametros != null)
+            {
+                Console.WriteLine($"ReCaptchaEnabled: {parametros.ReCaptchaEnabled}");
+                Console.WriteLine($"ReCaptchaSiteKey: {parametros.ReCaptchaSiteKey}");
+            }
             ViewBag.ParametrosSistema = parametros;
             return View();
         }
@@ -464,55 +492,86 @@ namespace Gerente.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CriarConta(CriarContaViewModel model, string? g_recaptcha_response)
         {
+            Console.WriteLine("=== DEBUG: CriarConta POST ===");
+            Console.WriteLine($"Model recebido: Nome='{model?.Nome}', Email='{model?.Email}'");
+            Console.WriteLine($"g_recaptcha_response: {g_recaptcha_response}");
+            Console.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
+            
+            if (!ModelState.IsValid)
+            {
+                Console.WriteLine("=== ModelState Errors ===");
+                foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    Console.WriteLine($"Error: {error.ErrorMessage}");
+                }
+            }
+            
             var parametros = ObterParametrosSistema();
             ViewBag.ParametrosSistema = parametros;
+            Console.WriteLine($"ReCaptchaEnabled: {parametros?.ReCaptchaEnabled}");
+            
             if (parametros?.ReCaptchaEnabled == true)
             {
+                Console.WriteLine("Validando reCAPTCHA...");
                 // Validação reCAPTCHA
                 if (string.IsNullOrEmpty(g_recaptcha_response) || !await ValidateReCaptcha(g_recaptcha_response, "register"))
                 {
+                    Console.WriteLine("Falha na validação do reCAPTCHA");
                     ModelState.AddModelError("", "Falha na validação do reCAPTCHA. Tente novamente.");
                     return View(model);
                 }
+                Console.WriteLine("reCAPTCHA validado com sucesso");
             }
             
             if (!ModelState.IsValid)
             {
+                Console.WriteLine("ModelState inválido, retornando view");
                 return View(model);
             }
 
             try
             {
+                Console.WriteLine("Verificando se e-mail já existe...");
                 // Verificar se o e-mail já existe
                 if (EmailExisteNoCadastro(model.Email))
                 {
+                    Console.WriteLine("E-mail já existe no cadastro");
                     ModelState.AddModelError("Email", "E-mail já cadastrado no sistema.");
                     return View(model);
                 }
 
+                Console.WriteLine("Gerando senha temporária...");
                 // Gerar senha temporária
                 var senhaTemporaria = GerarSenhaTemporaria();
                 var senhaHash = HashPassword(senhaTemporaria);
 
+                Console.WriteLine("Salvando usuário temporário...");
                 // Salvar usuário com status inativo
                 var userId = await SalvarUsuarioTemporario(model, senhaHash);
                 if (userId == null)
                 {
+                    Console.WriteLine("Erro ao salvar usuário temporário");
                     ModelState.AddModelError("", "Erro ao cadastrar usuário. Tente novamente.");
                     return View(model);
                 }
+                Console.WriteLine($"Usuário salvo com ID: {userId}");
 
+                Console.WriteLine("Enviando e-mail de confirmação...");
                 // Enviar e-mail de confirmação para o usuário
                 await _emailService.EnviarEmailConfirmacaoCadastroAsync(model.Email, model.Nome);
 
+                Console.WriteLine("Enviando e-mail de notificação para admin...");
                 // Enviar e-mail de notificação para o administrador
                 await _emailService.EnviarEmailNotificacaoAdminAsync(model.Email, model.Nome);
 
+                Console.WriteLine("Conta criada com sucesso!");
                 TempData["Sucesso"] = "Conta criada com sucesso! Você receberá um e-mail de confirmação e um administrador será notificado para ativar sua conta.";
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Erro ao criar conta: {ex.Message}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
                 ModelState.AddModelError("", $"Erro ao criar conta: {ex.Message}");
                 return View(model);
             }
@@ -538,6 +597,7 @@ namespace Gerente.Controllers
                 using (var conn = new NpgsqlConnection(connString))
                 {
                     await conn.OpenAsync();
+                    
                     using (var cmd = new NpgsqlCommand(
                         "INSERT INTO usuarios (nome, email, senha, ativo, data_criacao, data_atualizacao) VALUES (@nome, @email, @senha, @ativo, @dataCriacao, @dataAlteracao) RETURNING id", conn))
                     {
@@ -553,7 +613,7 @@ namespace Gerente.Controllers
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }

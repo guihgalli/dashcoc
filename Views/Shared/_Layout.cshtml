@@ -41,17 +41,21 @@
                             <span class="sidebar-text">Dashboard</span>
                         </a>
                     </li>
+                    <!-- Projetos ocultado -->
+                    <!--
                     <li class="nav-item mb-2">
                         <a class="nav-link text-white-50 sidebar-link" href="@Url.Action("Index", "Projetos")" data-bs-toggle="tooltip" title="Projetos">
                             <i class="bi bi-folder-fill me-2"></i>
                             <span class="sidebar-text">Projetos</span>
                         </a>
                     </li>
+                    -->
                     @if (Context.Session.GetInt32("UserId").HasValue)
                     {
                         var accessControlService = Context.RequestServices.GetService<Gerente.Services.AccessControlService>();
                         var userId = Context.Session.GetInt32("UserId").GetValueOrDefault();
-                        
+                        // Backlog Projetos ocultado
+                        /*
                         @if (accessControlService?.HasAccessToBacklogArquitetura(userId) == true)
                         {
                             <li class="nav-item mb-2">
@@ -61,6 +65,7 @@
                                 </a>
                             </li>
                         }
+                        */
                     }
                     @if (Context.Session.GetInt32("UserId").HasValue)
                     {
@@ -126,6 +131,8 @@
                                                     Parâmetro do Sistema
                                                 </a>
                                             </li>
+                                            <!-- Parâmetros de Ganho ocultado -->
+                                            <!--
                                             <li>
                                                 <a class="dropdown-item" href="@Url.Action("Index", "ParametroGanho")">
                                                     <i class="bi bi-trophy me-2"></i>
@@ -138,6 +145,7 @@
                                                     Parâmetros de Ambientes
                                                 </a>
                                             </li>
+                                            -->
                                         }
                                     </ul>
                                 </div>

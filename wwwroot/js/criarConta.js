@@ -1,8 +1,29 @@
+console.log('=== DEBUG: criarConta.js carregado ===');
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== DEBUG: DOM carregado em criarConta.js ===');
+    
     var form = document.getElementById('criarContaForm');
     var submitBtn = document.getElementById('submitBtn');
     var nomeInput = document.getElementById('Nome');
     var emailInput = document.getElementById('Email');
+    
+    console.log('Elementos encontrados:', {
+        form: !!form,
+        submitBtn: !!submitBtn,
+        nomeInput: !!nomeInput,
+        emailInput: !!emailInput
+    });
+    
+    if (!form) {
+        console.error('Formulário não encontrado!');
+        return;
+    }
+    
+    if (!submitBtn) {
+        console.error('Botão submit não encontrado!');
+        return;
+    }
     
     // Validação de e-mail em tempo real
     emailInput.addEventListener('input', function() {
@@ -42,6 +63,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Submit do formulário
     form.addEventListener('submit', function(e) {
+        console.log('=== DEBUG: Submit do formulário CriarConta ===');
+        console.log('window.recaptchaEnabled:', window.recaptchaEnabled);
+        console.log('window.grecaptcha:', window.grecaptcha);
+        console.log('window.recaptchaSiteKey:', window.recaptchaSiteKey);
+        console.log('Campo hidden encontrado:', document.getElementById('g_recaptcha_response'));
+        
         var nome = nomeInput.value.trim();
         var email = emailInput.value.trim();
         var isValid = true;
@@ -63,17 +90,58 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessage('error', 'Por favor, corrija os erros no formulário.', 5000);
             return;
         }
+        
         // Integração reCAPTCHA v3 condicional
         if (window.recaptchaEnabled) {
+            console.log('reCAPTCHA habilitado, verificando disponibilidade...');
             if (window.grecaptcha && window.recaptchaSiteKey) {
+                console.log('reCAPTCHA disponível, executando...');
                 e.preventDefault();
                 grecaptcha.ready(function() {
+                    console.log('reCAPTCHA ready, executando execute...');
                     grecaptcha.execute(window.recaptchaSiteKey, { action: 'register' }).then(function(token) {
-                        document.getElementById('g-recaptcha-response').value = token;
-                        form.submit();
+                        console.log('Token reCAPTCHA obtido:', token ? 'SIM' : 'NÃO');
+                        console.log('Token completo:', token);
+                        if (token) {
+                            var recaptchaField = document.getElementById('g_recaptcha_response');
+                            console.log('Campo hidden encontrado:', recaptchaField);
+                            if (recaptchaField) {
+                                recaptchaField.value = token;
+                                console.log('Token definido no campo hidden, submetendo formulário...');
+                                form.submit();
+                            } else {
+                                console.error('Campo hidden g_recaptcha_response não encontrado!');
+                                showMessage('error', 'Erro interno do reCAPTCHA. Tente novamente.', 5000);
+                                // Reabilitar botão
+                                var btnText = submitBtn.querySelector('.btn-text');
+                                var btnLoading = submitBtn.querySelector('.btn-loading');
+                                btnText.classList.remove('d-none');
+                                btnLoading.classList.add('d-none');
+                                submitBtn.disabled = false;
+                            }
+                        } else {
+                            console.log('Token não obtido, mostrando erro...');
+                            showMessage('error', 'Erro ao validar reCAPTCHA. Tente novamente.', 5000);
+                            // Reabilitar botão
+                            var btnText = submitBtn.querySelector('.btn-text');
+                            var btnLoading = submitBtn.querySelector('.btn-loading');
+                            btnText.classList.remove('d-none');
+                            btnLoading.classList.add('d-none');
+                            submitBtn.disabled = false;
+                        }
+                    }).catch(function(error) {
+                        console.log('Erro ao executar reCAPTCHA:', error);
+                        showMessage('error', 'Erro ao validar reCAPTCHA. Tente novamente.', 5000);
+                        // Reabilitar botão
+                        var btnText = submitBtn.querySelector('.btn-text');
+                        var btnLoading = submitBtn.querySelector('.btn-loading');
+                        btnText.classList.remove('d-none');
+                        btnLoading.classList.add('d-none');
+                        submitBtn.disabled = false;
                     });
                 });
             } else {
+                console.log('reCAPTCHA não disponível, submetendo sem validação...');
                 // Mostrar loading normalmente se reCAPTCHA não carregou
                 var btnText = submitBtn.querySelector('.btn-text');
                 var btnLoading = submitBtn.querySelector('.btn-loading');
@@ -82,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.disabled = true;
             }
         } else {
+            console.log('reCAPTCHA desabilitado, submetendo normalmente...');
             // Se reCAPTCHA desativado, submeter normalmente
             var btnText = submitBtn.querySelector('.btn-text');
             var btnLoading = submitBtn.querySelector('.btn-loading');
