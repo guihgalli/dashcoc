@@ -1,6 +1,6 @@
 using System;
 
-namespace Gerente.Models
+namespace Dashboard.Models
 {
     public class PasswordResetToken
     {

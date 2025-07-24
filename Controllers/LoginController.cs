@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 using System.Data;
-using Gerente.Services;
-using Gerente.Models;
+using Dashboard.Services;
+using Dashboard.Models;
 using System.Security.Cryptography;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace Gerente.Controllers
+namespace Dashboard.Controllers
 {
     public class LoginController : BaseController
     {

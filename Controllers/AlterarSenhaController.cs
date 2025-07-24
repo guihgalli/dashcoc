@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using Npgsql;
 
-namespace Gerente.Controllers
+namespace Dashboard.Controllers
 {
     public class AlterarSenhaController : Controller
     {

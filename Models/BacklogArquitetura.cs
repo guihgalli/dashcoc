@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace Gerente.Models
+namespace Dashboard.Models
 {
     public class BacklogArquitetura
     {

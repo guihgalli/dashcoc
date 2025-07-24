@@ -2,9 +2,9 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Gerente.Models;
+using Dashboard.Models;
 
-namespace Gerente.Controllers
+namespace Dashboard.Controllers
 {
     public class ConfiguracaoEmailController : BaseController
     {

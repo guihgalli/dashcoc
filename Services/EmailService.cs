@@ -1,11 +1,11 @@
 using System;
 using System.Net.Mail;
 using System.Net;
-using Gerente.Models;
+using Dashboard.Models;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
-namespace Gerente.Services
+namespace Dashboard.Services
 {
     public class EmailService
     {

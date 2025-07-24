@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Gerente.Models
+namespace Dashboard.Models
 {
     public class ParametroSistema
     {

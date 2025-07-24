@@ -1,6 +1,64 @@
-*.exe
-.terraform
-.terraform*
-terraform.tfvars
-*.pem
-*.backup
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+
+# Rider
+.idea/
+*.sln.iml
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# DotCover
+*.dotCover
+
+# Logs
+*.log
+
+# Database
+*.mdf
+*.ldf
+
+# Others
+*.dbmdl
+*.dbproj.schemaview
+*.pfx
+*.publish.xml
+
+# NuGet
+*.nupkg
+# The packages folder can be ignored because of Package Restore
+**/packages/*
+# except build/, which is used as an MSBuild target.
+!**/packages/build/
+# Uncomment if necessary however generally it will be regenerated when needed
+#!**/packages/repositories.config
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code settings
+.history/
+
+# Dotnet watch
+**/node_modules/
+
+# Docker
+*.container
+*.dockerfile

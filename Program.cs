@@ -1,4 +1,4 @@
-using Gerente.Services;
+using Dashboard.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

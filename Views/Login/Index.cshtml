@@ -1,7 +1,7 @@
 @{
     ViewData["Title"] = "Login";
     Layout = "_LoginLayout";
-    var parametros = ViewBag.ParametrosSistema as Gerente.Models.ParametroSistema;
+    var parametros = ViewBag.ParametrosSistema as Dashboard.Models.ParametroSistema;
     var siteKey = parametros?.ReCaptchaSiteKey ?? "";
     var recaptchaEnabled = parametros?.ReCaptchaEnabled ?? false;
 }
@@ -9,13 +9,13 @@
 @section Styles {
     <style>
         body {
-            background: @(string.IsNullOrEmpty(parametros?.CorFundoLogin) ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" : parametros.CorFundoLogin) !important;
+            background: @(string.IsNullOrEmpty(parametros?.CorFundoLogin) ? "linear-gradient(135deg,rgb(52, 153, 85) 0%,rgb(117, 185, 115) 100%)" : parametros.CorFundoLogin) !important;
         }
     </style>
 }
 
 <div class="login-header">
-    <h1>@(!string.IsNullOrEmpty(parametros?.DescricaoCabecalhoLogin) ? parametros.DescricaoCabecalhoLogin : "Senior - COC - Projetos")</h1>
+    <h1>@(!string.IsNullOrEmpty(parametros?.DescricaoCabecalhoLogin) ? parametros.DescricaoCabecalhoLogin : "Senior - COC - Diario de Bordo")</h1>
     <p>Faça login para acessar o sistema</p>
 </div>
 

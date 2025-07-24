@@ -1,4 +1,4 @@
-namespace Gerente.Models;
+namespace Dashboard.Models;
 
 public class ErrorViewModel
 {

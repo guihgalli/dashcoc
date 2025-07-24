@@ -1,9 +1,9 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Gerente.Models;
+using Dashboard.Models;
 
-namespace Gerente.Services
+namespace Dashboard.Services
 {
     public class AccessControlService
     {

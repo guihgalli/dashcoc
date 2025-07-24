@@ -1,4 +1,4 @@
-@model Gerente.Models.UsuarioViewModel
+@model Dashboard.Models.UsuarioViewModel
 @{
     ViewData["Title"] = "Editar Usuário";
 }
@@ -91,7 +91,7 @@
                                     <i class="bi bi-shield-lock me-1"></i>
                                     Perfil de Acesso
                                 </label>
-                                <select asp-for="PerfilAcessoId" class="form-select" asp-items="@(new SelectList(ViewBag.PerfisAcesso ?? new List<Gerente.Models.PerfilAcesso>(), "Id", "Nome"))">
+                                <select asp-for="PerfilAcessoId" class="form-select" asp-items="@(new SelectList(ViewBag.PerfisAcesso ?? new List<Dashboard.Models.PerfilAcesso>(), "Id", "Nome"))">
                                     <option value="">Selecione um perfil de acesso</option>
                                 </select>
                                 <span asp-validation-for="PerfilAcessoId" class="text-danger"></span>

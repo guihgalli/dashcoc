@@ -1,8 +1,8 @@
-@model Gerente.Models.CriarContaViewModel
+@model Dashboard.Models.CriarContaViewModel
 @{
     ViewData["Title"] = "Criar Conta";
     Layout = "_LoginLayout";
-    var parametros = ViewBag.ParametrosSistema as Gerente.Models.ParametroSistema;
+    var parametros = ViewBag.ParametrosSistema as Dashboard.Models.ParametroSistema;
     var siteKey = parametros?.ReCaptchaSiteKey ?? "";
     var recaptchaEnabled = parametros?.ReCaptchaEnabled ?? false;
     

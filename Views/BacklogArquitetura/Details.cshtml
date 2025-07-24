@@ -1,8 +1,8 @@
-@model Gerente.Models.BacklogArquitetura
+@model Dashboard.Models.BacklogArquitetura
 @{
     ViewData["Title"] = "Detalhes do Backlog";
-    var anexos = ViewBag.Anexos as List<Gerente.Models.AnexoBacklog> ?? new List<Gerente.Models.AnexoBacklog>();
-    var comentarios = ViewBag.Comentarios as List<Gerente.Models.ComentarioBacklog> ?? new List<Gerente.Models.ComentarioBacklog>();
+    var anexos = ViewBag.Anexos as List<Dashboard.Models.AnexoBacklog> ?? new List<Dashboard.Models.AnexoBacklog>();
+    var comentarios = ViewBag.Comentarios as List<Dashboard.Models.ComentarioBacklog> ?? new List<Dashboard.Models.ComentarioBacklog>();
 }
 
 <!-- Sistema de Mensagens -->

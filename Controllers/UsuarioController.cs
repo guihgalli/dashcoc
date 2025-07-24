@@ -2,12 +2,12 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Gerente.Models;
+using Dashboard.Models;
 using System.Collections.Generic; // Added missing import
 using Gerente.Filters;
-using Gerente.Services;
+using Dashboard.Services;
 
-namespace Gerente.Controllers
+namespace Dashboard.Controllers
 {
     [RequireUsersAccess]
     public class UsuarioController : BaseController

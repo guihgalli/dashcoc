@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 
-namespace Gerente.Controllers;
+namespace Dashboard.Controllers;
 
 public class ProjetosController : BaseController
 {

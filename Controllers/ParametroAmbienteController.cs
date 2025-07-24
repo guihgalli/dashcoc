@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Gerente.Models;
+using Dashboard.Models;
 using Gerente.Filters;
 using Npgsql;
 
-namespace Gerente.Controllers
+namespace Dashboard.Controllers
 {
     public class ParametroAmbienteController : BaseController
     {

@@ -2,12 +2,12 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Gerente.Models;
+using Dashboard.Models;
 using System.Collections.Generic;
 using Gerente.Filters;
 using System.Linq; // Added for SelectMany
 
-namespace Gerente.Controllers
+namespace Dashboard.Controllers
 {
     [RequireConfigurationsAccess]
     public class PerfilAcessoController : Controller

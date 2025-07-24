@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Projeto\\coc-solucoes-projetos\\Gerente.csproj": {}
+    "C:\\app\\coc-solucoes-dash\\Gerente.csproj": {}
   },
   "projects": {
-    "C:\\Projeto\\coc-solucoes-projetos\\Gerente.csproj": {
+    "C:\\app\\coc-solucoes-dash\\Gerente.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Projeto\\coc-solucoes-projetos\\Gerente.csproj",
-        "projectName": "Gerente",
-        "projectPath": "C:\\Projeto\\coc-solucoes-projetos\\Gerente.csproj",
-        "packagesPath": "C:\\Users\\melim.rafael\\.nuget\\packages\\",
-        "outputPath": "C:\\Projeto\\coc-solucoes-projetos\\obj\\",
+        "projectUniqueName": "C:\\app\\coc-solucoes-dash\\Gerente.csproj",
+        "projectName": "Dashboard",
+        "projectPath": "C:\\app\\coc-solucoes-dash\\Gerente.csproj",
+        "packagesPath": "C:\\Users\\galli.guilherme\\.nuget\\packages\\",
+        "outputPath": "C:\\app\\coc-solucoes-dash\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\melim.rafael\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\galli.guilherme\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"

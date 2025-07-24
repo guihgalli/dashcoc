@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Gerente.Models;
+using Dashboard.Models;
 using Npgsql;
 
-namespace Gerente.Controllers
+namespace Dashboard.Controllers
 {
     public abstract class BaseController : Controller
     {

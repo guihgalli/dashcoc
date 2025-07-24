@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Gerente.Models;
+using Dashboard.Models;
 using Gerente.Filters;
 using Npgsql;
 using System.Text.Json;
 
-namespace Gerente.Controllers
+namespace Dashboard.Controllers
 {
     public class BacklogArquiteturaController : BaseController
     {

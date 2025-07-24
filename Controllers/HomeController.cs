@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Gerente.Models;
+using Dashboard.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace Gerente.Controllers;
+namespace Dashboard.Controllers;
 
     public class HomeController : BaseController
     {
