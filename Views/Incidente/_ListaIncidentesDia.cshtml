@@ -1,0 +1,31 @@
+@model IEnumerable<coc_solucoes_dash.Models.Incidente>
+@if (!Model.Any()) {
+    <div class="alert alert-info">Nenhum incidente registrado neste dia.</div>
+} else {
+    <table class="table table-sm table-bordered">
+        <thead>
+            <tr>
+                <th>Início</th>
+                <th>Fim</th>
+                <th>Tipo</th>
+                <th>Ambiente</th>
+                <th>Segmento</th>
+                <th>Crítico</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var inc in Model) {
+            <tr>
+                <td>@inc.DataHoraInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@(inc.DataHoraFim?.ToString("dd/MM/yyyy HH:mm"))</td>
+                <td>@inc.TipoIncidente?.Nome</td>
+                <td>@inc.Ambiente?.Nome</td>
+                <td>@inc.Segmento?.Nome</td>
+                <td style="background:@inc.Criticidade?.Cor;color:#fff;font-weight:bold;text-align:center;">@inc.Criticidade?.Nome</td>
+                <td>@inc.Descricao</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+} 

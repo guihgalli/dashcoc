@@ -2,6 +2,10 @@
 @{
     ViewBag.Title = "Dashboard Operacional";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var ambientes = ViewBag.Ambientes as IEnumerable<coc_solucoes_dash.Models.Ambiente> ?? new List<coc_solucoes_dash.Models.Ambiente>();
+    var segmentos = ViewBag.Segmentos as IEnumerable<coc_solucoes_dash.Models.Segmento> ?? new List<coc_solucoes_dash.Models.Segmento>();
+    var diasComIncidentes = ViewBag.DiasComIncidentes as IEnumerable<dynamic> ?? new List<dynamic>();
+    string segmentoSelecionado = ViewContext.HttpContext.Request.Query["segmentoId"];
 }
 
 <h2>Dashboard Operacional</h2>
@@ -49,4 +53,89 @@
     <a href="@Url.Action("NovoIncidente", "Dashboard")" class="btn btn-lg btn-primary">Registrar Novo Incidente</a>
 </div>
 
+<!-- Filtros -->
+<form method="get" class="mb-3">
+    <div class="row align-items-end">
+        <div class="col-md-3">
+            <label for="ambienteId">Ambiente</label>
+            <select class="form-control" id="ambienteId" name="ambienteId">
+                <option value="">Todos</option>
+                @foreach (var ambiente in ambientes)
+                {
+                    if (ambiente == null) { continue; }
+                    var selected = (ViewBag.AmbienteSelecionado != null && ViewBag.AmbienteSelecionado.ToString() == ambiente.Id.ToString()) ? "selected=\"selected\"" : "";
+                    @:<option value="@ambiente.Id" @Html.Raw(selected)>@ambiente.Nome</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="segmentoId">Segmento</label>
+            <select class="form-control" id="segmentoId" name="segmentoId">
+                <option value="">Todos</option>
+                @foreach (var segmento in segmentos)
+                {
+                    if (segmento == null) { continue; }
+                    var selected = (segmentoSelecionado == segmento.Id.ToString()) ? "selected=\"selected\"" : "";
+                    @:<option value="@segmento.Id" @Html.Raw(selected)>@segmento.Nome</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<!-- Calendário -->
+<div class="mb-4">
+    @if (ViewBag.AmbienteSelecionado != null) {
+        <h4>Calendário de Incidentes - Ano @ViewBag.AnoSelecionado</h4>
+        <div class="row">
+            @for (int m = 1; m <= 12; m++) {
+                var viewData = new ViewDataDictionary(ViewContext.ViewData);
+                viewData.Remove("Mes");
+                viewData.Remove("Ano");
+                viewData.Remove("DiasComIncidentes");
+                viewData["Mes"] = m;
+                viewData["Ano"] = ViewBag.AnoSelecionado;
+                viewData["DiasComIncidentes"] = diasComIncidentes;
+                <div class="col-md-3 mb-4"> <!-- 4 colunas por linha -->
+                    <partial name="_CalendarioMes" view-data="viewData" />
+                </div>
+            }
+        </div>
+    } else {
+        <h4>Calendário de Incidentes - @ViewBag.MesSelecionado/@ViewBag.AnoSelecionado</h4>
+        var viewData = new ViewDataDictionary(ViewContext.ViewData);
+        viewData.Remove("Mes");
+        viewData.Remove("Ano");
+        viewData.Remove("DiasComIncidentes");
+        viewData["Mes"] = ViewBag.MesSelecionado;
+        viewData["Ano"] = ViewBag.AnoSelecionado;
+        viewData["DiasComIncidentes"] = diasComIncidentes;
+        <partial name="_CalendarioMes" view-data="viewData" />
+    }
+</div>
+
 <!-- Aqui virão filtros, mapa de calor, gráficos e resumo executivo --> 
+@section Scripts {
+<script>
+$(document).ready(function () {
+    var ambienteSelect = $("#ambienteId");
+    var segmentoSelect = $("#segmentoId");
+
+    ambienteSelect.change(function () {
+        var ambienteId = $(this).val();
+        segmentoSelect.empty();
+        segmentoSelect.append('<option value="">Todos</option>');
+        if (ambienteId) {
+            $.getJSON("/Incidente/SegmentosPorAmbiente", { ambienteId: ambienteId }, function (data) {
+                $.each(data, function (i, item) {
+                    segmentoSelect.append('<option value="' + item.id + '">' + item.nome + '</option>');
+                });
+            });
+        }
+    });
+});
+</script>
+} 

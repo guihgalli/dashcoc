@@ -71,8 +71,8 @@
             {
                 <tr>
                     <td>@item.Id</td>
-                    <td>@item.DataHoraInicio</td>
-                    <td>@item.DataHoraFim</td>
+                    <td>@item.DataHoraInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(item.DataHoraFim?.ToString("dd/MM/yyyy HH:mm"))</td>
                     <td>@item.TipoIncidente?.Nome</td>
                     <td>@item.Ambiente?.Nome</td>
                     <td>@item.Segmento?.Nome</td>

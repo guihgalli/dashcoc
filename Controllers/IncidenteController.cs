@@ -38,6 +38,15 @@ namespace Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Incidente incidente)
         {
+            // Calcular DuracaoMinutos automaticamente
+            if (incidente.DataHoraInicio != null && incidente.DataHoraFim != null)
+            {
+                incidente.DuracaoMinutos = (int)(incidente.DataHoraFim.Value - incidente.DataHoraInicio).TotalMinutes;
+            }
+            else
+            {
+                incidente.DuracaoMinutos = null;
+            }
             // LOG TEMPORÁRIO PARA DEPURAÇÃO
             Console.WriteLine($"DataHoraInicio: {incidente.DataHoraInicio}");
             Console.WriteLine($"DataHoraFim: {incidente.DataHoraFim}");
@@ -120,6 +129,15 @@ namespace Dashboard.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Incidente incidente)
         {
+            // Calcular DuracaoMinutos automaticamente
+            if (incidente.DataHoraInicio != null && incidente.DataHoraFim != null)
+            {
+                incidente.DuracaoMinutos = (int)(incidente.DataHoraFim.Value - incidente.DataHoraInicio).TotalMinutes;
+            }
+            else
+            {
+                incidente.DuracaoMinutos = null;
+            }
             if (ModelState.IsValid)
             {
                 var incidenteService = new Services.IncidenteService(_configuration);
@@ -148,6 +166,14 @@ namespace Dashboard.Controllers
             var incidenteService = new Services.IncidenteService(_configuration);
             var segmentos = incidenteService.ObterSegmentosPorAmbiente(ambienteId);
             return Json(segmentos);
+        }
+
+        [HttpGet]
+        public IActionResult IncidentesPorDia(int ano, int mes, int dia, int? ambienteId = null, int? segmentoId = null)
+        {
+            var incidenteService = new Services.IncidenteService(_configuration);
+            var incidentes = incidenteService.ObterPorData(ano, mes, dia, ambienteId, segmentoId);
+            return PartialView("_ListaIncidentesDia", incidentes);
         }
     }
 } 

@@ -265,5 +265,110 @@ namespace Dashboard.Services
             }
             return segmentos;
         }
+
+        public List<(DateTime Dia, int CriticidadeId, int CriticidadePeso, string CriticidadeCor)> ObterDiasComIncidentes(int? ano = null, int? mes = null, int? ambienteId = null, int? segmentoId = null)
+        {
+            var dias = new List<(DateTime, int, int, string)>();
+            string? connString = _configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connString)) return dias;
+            using (var conn = new NpgsqlConnection(connString))
+            {
+                conn.Open();
+                var sql = @"SELECT DATE(i.datahorainicio) as dia, i.criticidadeid, c.peso, c.cor
+                             FROM incidentes i
+                             LEFT JOIN criticidades c ON i.criticidadeid = c.id
+                             WHERE 1=1";
+                if (ano.HasValue) sql += " AND EXTRACT(YEAR FROM i.datahorainicio) = @ano";
+                if (mes.HasValue) sql += " AND EXTRACT(MONTH FROM i.datahorainicio) = @mes";
+                if (ambienteId.HasValue) sql += " AND i.ambienteid = @ambienteId";
+                if (segmentoId.HasValue) sql += " AND i.segmentoid = @segmentoId";
+                sql += " ORDER BY dia, c.peso ASC"; // peso ASC: menor peso = mais crítico
+                using (var cmd = new NpgsqlCommand(sql, conn))
+                {
+                    if (ano.HasValue) cmd.Parameters.AddWithValue("@ano", ano.Value);
+                    if (mes.HasValue) cmd.Parameters.AddWithValue("@mes", mes.Value);
+                    if (ambienteId.HasValue) cmd.Parameters.AddWithValue("@ambienteId", ambienteId.Value);
+                    if (segmentoId.HasValue) cmd.Parameters.AddWithValue("@segmentoId", segmentoId.Value);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        var diasTemp = new Dictionary<DateTime, (int CriticidadeId, int CriticidadePeso, string CriticidadeCor)>();
+                        while (reader.Read())
+                        {
+                            var dia = reader.GetDateTime(0);
+                            var critId = reader.GetInt32(1);
+                            var peso = reader.GetInt32(2);
+                            var cor = reader.GetString(3);
+                            // Se já existe o dia, só substitui se o peso for menor (mais crítico)
+                            if (!diasTemp.ContainsKey(dia) || peso < diasTemp[dia].CriticidadePeso)
+                                diasTemp[dia] = (critId, peso, cor);
+                        }
+                        foreach (var kv in diasTemp)
+                        {
+                            dias.Add((kv.Key, kv.Value.CriticidadeId, kv.Value.CriticidadePeso, kv.Value.CriticidadeCor));
+                        }
+                    }
+                }
+            }
+            return dias;
+        }
+
+        public List<Incidente> ObterPorData(int ano, int mes, int dia, int? ambienteId = null, int? segmentoId = null)
+        {
+            var incidentes = new List<Incidente>();
+            string? connString = _configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connString)) return incidentes;
+            using (var conn = new NpgsqlConnection(connString))
+            {
+                conn.Open();
+                var sql = @"SELECT i.id, i.datahorainicio, i.datahorafim, i.tipoincidenteid, t.nome as tiponome, i.ambienteid, a.nome as ambientenome, i.segmentoid, s.nome as segmentonome, i.criticidadeid, c.nome as criticidadenome, c.cor, i.descricao, i.acoestomadas, i.duracaominutos
+                            FROM incidentes i
+                            LEFT JOIN ambientes a ON i.ambienteid = a.id
+                            LEFT JOIN segmentos s ON i.segmentoid = s.id
+                            LEFT JOIN tiposincidente t ON i.tipoincidenteid = t.id
+                            LEFT JOIN criticidades c ON i.criticidadeid = c.id
+                            WHERE EXTRACT(YEAR FROM i.datahorainicio) = @ano
+                              AND EXTRACT(MONTH FROM i.datahorainicio) = @mes
+                              AND EXTRACT(DAY FROM i.datahorainicio) = @dia";
+                if (ambienteId.HasValue) sql += " AND i.ambienteid = @ambienteId";
+                if (segmentoId.HasValue) sql += " AND i.segmentoid = @segmentoId";
+                sql += " ORDER BY i.datahorainicio DESC";
+                using (var cmd = new NpgsqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ano", ano);
+                    cmd.Parameters.AddWithValue("@mes", mes);
+                    cmd.Parameters.AddWithValue("@dia", dia);
+                    if (ambienteId.HasValue) cmd.Parameters.AddWithValue("@ambienteId", ambienteId.Value);
+                    if (segmentoId.HasValue) cmd.Parameters.AddWithValue("@segmentoId", segmentoId.Value);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            incidentes.Add(new Incidente
+                            {
+                                Id = reader.GetInt32(0),
+                                DataHoraInicio = reader.GetDateTime(1),
+                                DataHoraFim = reader.IsDBNull(2) ? (DateTime?)null : reader.GetDateTime(2),
+                                TipoIncidenteId = reader.GetInt32(3),
+                                TipoIncidente = new TipoIncidente { Id = reader.GetInt32(3), Nome = reader.IsDBNull(4) ? null : reader.GetString(4) },
+                                AmbienteId = reader.GetInt32(5),
+                                Ambiente = new Ambiente { Id = reader.GetInt32(5), Nome = reader.IsDBNull(6) ? null : reader.GetString(6) },
+                                SegmentoId = reader.GetInt32(7),
+                                Segmento = new Segmento { Id = reader.GetInt32(7), Nome = reader.IsDBNull(8) ? null : reader.GetString(8) },
+                                CriticidadeId = reader.GetInt32(9),
+                                Criticidade = new Criticidade {
+                                    Id = reader.GetInt32(9),
+                                    Nome = reader.IsDBNull(10) ? null : reader.GetString(10),
+                                    Cor = reader.IsDBNull(11) ? null : reader.GetString(11)
+                                },
+                                Descricao = reader.IsDBNull(12) ? null : reader.GetString(12),
+                                AcoesTomadas = reader.IsDBNull(13) ? null : reader.GetString(13),
+                                DuracaoMinutos = reader.IsDBNull(14) ? null : reader.GetInt32(14)
+                            });
+                        }
+                    }
+                }
+            }
+            return incidentes;
+        }
     }
 } 

@@ -1,0 +1,110 @@
+@{
+    var mes = (int)ViewData["Mes"];
+    var ano = (int)ViewData["Ano"];
+    var diasComIncidentes = ViewData["DiasComIncidentes"] as IEnumerable<dynamic> ?? new List<dynamic>();
+    var diasDoMes = DateTime.DaysInMonth(ano, mes);
+    var primeiroDia = new DateTime(ano, mes, 1);
+    var diaSemana = (int)primeiroDia.DayOfWeek;
+    var dias = new Dictionary<int, string>(); // dia -> cor
+    foreach (var d in diasComIncidentes)
+    {
+        if (d == null) { continue; }
+        DateTime? diaInc = null;
+        string cor = null;
+        try {
+            diaInc = d.Dia;
+            cor = d.CriticidadeCor;
+        } catch { continue; }
+        if (diaInc.HasValue && diaInc.Value.Month == mes && diaInc.Value.Year == ano)
+        {
+            dias[diaInc.Value.Day] = cor;
+        }
+    }
+    var mesesPtBr = new[] { "", "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
+    var diasSemanaPtBr = new[] { "Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb" };
+}
+<table class="table table-bordered text-center calendario-mes">
+    <thead>
+        <tr>
+            <th colspan="7">@mesesPtBr[mes]</th>
+        </tr>
+        <tr>
+            @foreach (var diaSemanaNome in diasSemanaPtBr) { <th>@diaSemanaNome</th> }
+        </tr>
+    </thead>
+    <tbody>
+@{
+    int diaDaSemana = diaSemana;
+    int totalDias = diasDoMes;
+    int dia = 1;
+    while (dia <= totalDias)
+    {
+        WriteLiteral("<tr>");
+        for (int i = 0; i < 7; i++)
+        {
+            if (dia == 1 && i < diaSemana)
+            {
+                WriteLiteral("<td></td>");
+            }
+            else if (dia <= totalDias)
+            {
+                string cor = dias.ContainsKey(dia) ? dias[dia] : null;
+                if (cor != null) {
+                    WriteLiteral($"<td class=\"incidente-dia\" style=\"background-color: {cor}; color: #fff; font-weight: bold; position: relative; cursor:pointer;\" title=\"Incidente\" data-dia='{dia}' data-mes='{mes}' data-ano='{ano}'>{dia}</td>");
+                } else {
+                    WriteLiteral($"<td>{dia}</td>");
+                }
+                dia++;
+            }
+            else
+            {
+                WriteLiteral("<td></td>");
+            }
+        }
+        WriteLiteral("</tr>");
+    }
+}
+    </tbody>
+</table>
+<style>
+.calendario-mes th, .calendario-mes td { width: 48px; height: 48px; padding: 0; font-size: 1.2em; }
+.calendario-mes td.incidente-dia { box-shadow: 0 0 0 2px #333 inset; border-radius: 50%; border: 2px solid #222; text-align: center; vertical-align: middle; }
+.incidente-icone { position: absolute; left: 4px; top: 4px; font-size: 1em; color: #fff; filter: drop-shadow(0 0 2px #000); }
+</style> 
+<script>
+function bindIncidenteDiaClicks() {
+    document.querySelectorAll('.incidente-dia').forEach(function(td) {
+        td.onclick = function() {
+            var dia = td.getAttribute('data-dia');
+            var mes = td.getAttribute('data-mes');
+            var ano = td.getAttribute('data-ano');
+            var ambienteId = document.getElementById('ambienteId')?.value || '';
+            var segmentoId = document.getElementById('segmentoId')?.value || '';
+            var url = `/Incidente/IncidentesPorDia?ano=${ano}&mes=${mes}&dia=${dia}`;
+            if (ambienteId) url += `&ambienteId=${ambienteId}`;
+            if (segmentoId) url += `&segmentoId=${segmentoId}`;
+            fetch(url)
+              .then(resp => resp.text())
+              .then(html => {
+                var modal = document.getElementById('modalIncidentesDia');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'modalIncidentesDia';
+                    modal.innerHTML = `<div class=\"modal fade\" tabindex=\"-1\" role=\"dialog\"><div class=\"modal-dialog modal-lg\"><div class=\"modal-content\"><div class=\"modal-header\"><h5 class=\"modal-title\">Incidentes do dia</h5><button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div><div class=\"modal-body\"></div></div></div></div>`;
+                    document.body.appendChild(modal);
+                }
+                modal.querySelector('.modal-body').innerHTML = html;
+                var modalEl = $(modal).find('.modal');
+                modalEl.modal('show');
+                // Fechar modal ao clicar no X
+                modal.querySelector('.close').onclick = function() {
+                    modalEl.modal('hide');
+                };
+              });
+        };
+    });
+}
+// Executa ao carregar a página
+bindIncidenteDiaClicks();
+// Se usar AJAX para atualizar o calendário, chame bindIncidenteDiaClicks() após atualizar o HTML.
+</script> 
