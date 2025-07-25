@@ -3,12 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @(ViewBag.CabecalhoSistema ?? "DorowCamp")</title>
+    <title>@ViewData["Title"] - @(ViewBag.CabecalhoSistema ?? "Diario de Bordo - COC")</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/messages.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/png" href="https://frontend.senior.com.br/tecnologia/platform/login/assets/image/favicon.png" />
     @RenderSection("Styles", required: false)
 </head>
 <body>
@@ -26,7 +27,7 @@
             <div class="row justify-content-center align-items-center">
                 <div class="col-auto">
                     <span class="footer-text me-3">
-                        @(ViewBag.NomeRodape ?? "Sistema DorowCamp 2025©")
+                        @(ViewBag.NomeRodape ?? "Diario de Bordo - CCC")
                     </span>
                     <small class="version-text">
                         Versão @(ViewBag.VersaoSistema ?? "1.0.0")

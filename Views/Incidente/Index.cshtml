@@ -1,0 +1,122 @@
+@model IEnumerable<coc_solucoes_dash.Models.Incidente>
+@{
+    ViewBag.Title = "Incidentes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var editId = Context.Request.Query["editId"].FirstOrDefault();
+    var criticidades = ViewBag.Criticidades as List<coc_solucoes_dash.Models.Criticidade>;
+    var tiposIncidente = ViewBag.TiposIncidente as List<coc_solucoes_dash.Models.TipoIncidente>;
+}
+
+<h2>Incidentes</h2>
+<a href="@Url.Action("Create", "Incidente")" class="btn btn-primary mb-3">Registrar Novo Incidente</a>
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Tipo</th>
+            <th>Ambiente</th>
+            <th>Segmento</th>
+            <th>Descrição</th>
+            <th>Ações Tomadas</th>
+            <th>Criticidade</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var isEditing = editId == item.Id.ToString();
+            if (isEditing)
+            {
+                <form asp-action="Edit" method="post">
+                <tr>
+                    <td>@item.Id<input type="hidden" name="Id" value="@item.Id" /><input type="hidden" name="AmbienteId" value="@item.AmbienteId" /><input type="hidden" name="SegmentoId" value="@item.SegmentoId" /></td>
+                    <td><input name="DataHoraInicio" type="datetime-local" class="form-control" value="@item.DataHoraInicio.ToString("yyyy-MM-ddTHH:mm")" /></td>
+                    <td><input name="DataHoraFim" type="datetime-local" class="form-control" value="@(item.DataHoraFim?.ToString("yyyy-MM-ddTHH:mm"))" /></td>
+                    <td>
+                        <select name="TipoIncidenteId" class="form-control">
+                            @foreach (var tipo in tiposIncidente)
+                            {
+                                <option value="@tipo.Id" selected="@(tipo.Id == item.TipoIncidenteId ? "selected" : null)">@tipo.Nome</option>
+                            }
+                        </select>
+                    </td>
+                    <td>@item.Ambiente?.Nome</td>
+                    <td>@item.Segmento?.Nome</td>
+                    <td><textarea name="Descricao" class="form-control">@item.Descricao</textarea></td>
+                    <td><textarea name="AcoesTomadas" class="form-control">@item.AcoesTomadas</textarea></td>
+                    <td>
+                        <div class="criticidade-inline">
+                            <select name="CriticidadeId" class="form-control" id="select-crit-@item.Id" onchange="atualizarCorCriticidade(this, @item.Id)">
+                                @foreach (var crit in criticidades)
+                                {
+                                    <option value="@crit.Id" data-cor="@crit.Cor" selected="@(crit.Id == item.CriticidadeId ? "selected" : null)">@crit.Nome</option>
+                                }
+                            </select>
+                            <span id="cor-crit-@item.Id" class="cor-criticidade" style="background:@(criticidades.FirstOrDefault(c => c.Id == item.CriticidadeId)?.Cor ?? "#fff");"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="submit" class="btn btn-sm btn-success">Salvar</button>
+                        <a href="@Url.Action("Index", "Incidente")" class="btn btn-sm btn-secondary">Cancelar</a>
+                    </td>
+                </tr>
+                </form>
+            }
+            else
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.DataHoraInicio</td>
+                    <td>@item.DataHoraFim</td>
+                    <td>@item.TipoIncidente?.Nome</td>
+                    <td>@item.Ambiente?.Nome</td>
+                    <td>@item.Segmento?.Nome</td>
+                    <td>@item.Descricao</td>
+                    <td>@item.AcoesTomadas</td>
+                    <td>
+                        @if (item.Criticidade != null)
+                        {
+                            <span style="display:inline-block;width:16px;height:16px;border-radius:50%;background:@item.Criticidade.Cor;border:1px solid #ccc;vertical-align:middle;margin-right:4px;"></span>
+                            @item.Criticidade.Nome
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Index", "Incidente", new { editId = item.Id })" class="btn btn-sm btn-warning">Editar</a>
+                        <button class="btn btn-sm btn-danger" onclick="excluirIncidente(@item.Id)">Excluir</button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+</div>
+
+<script>
+function excluirIncidente(id) {
+    if (confirm('Tem certeza que deseja excluir este incidente?')) {
+        fetch('@Url.Action("Delete", "Incidente")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
+            body: JSON.stringify({ id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        });
+    }
+}
+
+function atualizarCorCriticidade(select, id) {
+    var cor = select.options[select.selectedIndex].getAttribute('data-cor');
+    document.getElementById('cor-crit-' + id).style.background = cor;
+}
+</script> 

@@ -833,3 +833,8 @@ body {
     z-index: 9999 !important;
     position: fixed !important;
 } 
+
+.bg-login-senior {
+    background: url('https://d2nytdlptrqhdi.cloudfront.net/wp-content/uploads/2025/03/18154805/BG-textura-senior-H-1.jpg') no-repeat center center fixed;
+    background-size: cover;
+} 

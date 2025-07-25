@@ -1,0 +1,97 @@
+@model coc_solucoes_dash.Models.Incidente
+@{
+    ViewBag.Title = "Registrar Novo Incidente";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Registrar Novo Incidente</h2>
+
+@if (TempData["Erro"] != null) {
+    <div class="alert alert-danger">@TempData["Erro"]</div>
+}
+<form asp-action="Create" method="post">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <label>Data/Hora de Início *</label>
+        <input asp-for="DataHoraInicio" class="form-control" type="datetime-local" required />
+    </div>
+    <div class="form-group">
+        <label>Data/Hora de Fim</label>
+        <input asp-for="DataHoraFim" class="form-control" type="datetime-local" />
+    </div>
+    <div class="form-group">
+        <label>Tipo de Incidente *</label>
+        <select asp-for="TipoIncidenteId" class="form-control" required>
+            <option value="">Selecione</option>
+            @foreach (var tipo in ViewBag.TiposIncidente)
+            {
+                <option value="@tipo.Id">@tipo.Nome</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Ambiente *</label>
+        <select asp-for="AmbienteId" class="form-control" required>
+            <option value="">Selecione</option>
+            @foreach (var ambiente in ViewBag.Ambientes)
+            {
+                <option value="@ambiente.Id">@ambiente.Nome</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Segmento *</label>
+        <select asp-for="SegmentoId" class="form-control" required>
+            <option value="">Selecione</option>
+            @if (ViewBag.Segmentos != null)
+            {
+                foreach (var segmento in ViewBag.Segmentos)
+                {
+                    <option value="@segmento.Id" selected="@(segmento.Id == Model?.SegmentoId ? "selected" : null)">@segmento.Nome</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Criticidade *</label>
+        <select asp-for="CriticidadeId" class="form-control" required>
+            <option value="">Selecione</option>
+            @foreach (var crit in ViewBag.Criticidades)
+            {
+                <option value="@crit.Id">@crit.Nome</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Descrição *</label>
+        <textarea asp-for="Descricao" class="form-control" required></textarea>
+    </div>
+    <div class="form-group">
+        <label>Ações Tomadas *</label>
+        <textarea asp-for="AcoesTomadas" class="form-control" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Registrar</button>
+    <a href="@Url.Action("Index", "Incidente")" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+<script>
+$(document).ready(function () {
+    var ambienteSelect = $("select[name$='AmbienteId']");
+    var segmentoSelect = $("select[name$='SegmentoId']");
+
+    ambienteSelect.change(function () {
+        var ambienteId = $(this).val();
+        segmentoSelect.empty();
+        segmentoSelect.append('<option value="">Selecione</option>');
+        if (ambienteId) {
+            $.getJSON("/Incidente/SegmentosPorAmbiente", { ambienteId: ambienteId }, function (data) {
+                $.each(data, function (i, item) {
+                    segmentoSelect.append('<option value="' + item.id + '">' + item.nome + '</option>');
+                });
+            });
+        }
+    });
+});
+</script>
+} 

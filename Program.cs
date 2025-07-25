@@ -1,4 +1,6 @@
 using Dashboard.Services;
+using Microsoft.EntityFrameworkCore;
+using coc_solucoes_dash.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,10 @@ builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Configurar o DbContext para PostgreSQL
+builder.Services.AddDbContext<DashboardContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Adicionar HttpContextAccessor para acessar o contexto HTTP
 builder.Services.AddHttpContextAccessor();

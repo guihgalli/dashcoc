@@ -1,0 +1,340 @@
+@{
+    ViewBag.Title = "Cadastro do Sistema";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var abaAtiva = ViewBag.AbaAtiva as string ?? "Ambientes";
+}
+
+<h2>Cadastro do Sistema</h2>
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+        <a class="nav-link @(abaAtiva=="Ambientes" ? "active" : "")" href="@Url.Action("Index", new { aba = "Ambientes" })">Ambientes</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(abaAtiva=="Segmentos" ? "active" : "")" href="@Url.Action("Index", new { aba = "Segmentos" })">Segmentos</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(abaAtiva=="TiposIncidente" ? "active" : "")" href="@Url.Action("Index", new { aba = "TiposIncidente" })">Tipos de Incidente</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(abaAtiva=="Criticidades" ? "active" : "")" href="@Url.Action("Index", new { aba = "Criticidades" })">Criticidades</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link @(abaAtiva=="Metas" ? "active" : "")" href="@Url.Action("Index", new { aba = "Metas" })">Metas</a>
+    </li>
+</ul>
+
+<div>
+    @if (abaAtiva == "Ambientes")
+    {
+        <button class="btn btn-primary mb-2" type="button" onclick="document.getElementById('novoAmbienteForm').classList.toggle('d-none');">Novo Ambiente</button>
+        <form id="novoAmbienteForm" asp-action="CriarAmbiente" method="post" class="mb-3 d-none">
+            <div class="input-group w-auto">
+                <input type="text" name="Nome" class="form-control" placeholder="Nome do Ambiente" required />
+                <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+        </form>
+        <table class="table table-bordered table-striped">
+            <thead><tr><th>ID</th><th>Nome</th><th>Ações</th></tr></thead>
+            <tbody>
+            @foreach (var item in ViewBag.Ambientes ?? new List<object>())
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Nome</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-warning" onclick="editarAmbiente(@item.Id)">Editar</button>
+                        <form asp-action="ExcluirAmbiente" method="post" class="d-inline" onsubmit="return confirm('Excluir este ambiente?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr id="editAmbienteForm-@item.Id" class="d-none">
+                    <td colspan="3">
+                        <form asp-action="EditarAmbiente" method="post" class="form-inline">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input type="text" name="Nome" value="@item.Nome" class="form-control d-inline w-auto" required />
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoAmbiente(@item.Id)">Cancelar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <script>
+            function editarAmbiente(id) {
+                document.getElementById('editAmbienteForm-' + id).classList.remove('d-none');
+            }
+            function cancelarEdicaoAmbiente(id) {
+                document.getElementById('editAmbienteForm-' + id).classList.add('d-none');
+            }
+        </script>
+    }
+    else if (abaAtiva == "Segmentos")
+    {
+        <button class="btn btn-primary mb-2" type="button" onclick="document.getElementById('novoSegmentoForm').classList.toggle('d-none');">Novo Segmento</button>
+        <form id="novoSegmentoForm" asp-action="CriarSegmento" method="post" class="mb-3 d-none">
+            <div class="input-group w-auto">
+                <input type="text" name="Nome" class="form-control" placeholder="Nome do Segmento" required />
+                <select name="AmbienteId" class="form-control" required>
+                    <option value="">Selecione o Ambiente</option>
+                    @foreach (var ambiente in ViewBag.Ambientes ?? new List<object>())
+                    {
+                        <option value="@ambiente.Id">@ambiente.Nome</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+        </form>
+        <table class="table table-bordered table-striped">
+            <thead><tr><th>ID</th><th>Nome</th><th>Ambiente</th><th>Ações</th></tr></thead>
+            <tbody>
+            @foreach (var item in ViewBag.Segmentos ?? new List<object>())
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Nome</td>
+                    <td>@item.Ambiente?.Nome</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-warning" onclick="editarSegmento(@item.Id)">Editar</button>
+                        <form asp-action="ExcluirSegmento" method="post" class="d-inline" onsubmit="return confirm('Excluir este segmento?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr id="editSegmentoForm-@item.Id" class="d-none">
+                    <td colspan="4">
+                        <form asp-action="EditarSegmento" method="post" class="form-inline">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input type="text" name="Nome" value="@item.Nome" class="form-control d-inline w-auto" required />
+                            <input type="hidden" name="AmbienteId" value="@item.AmbienteId" />
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoSegmento(@item.Id)">Cancelar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <script>
+            function editarSegmento(id) {
+                document.getElementById('editSegmentoForm-' + id).classList.remove('d-none');
+            }
+            function cancelarEdicaoSegmento(id) {
+                document.getElementById('editSegmentoForm-' + id).classList.add('d-none');
+            }
+        </script>
+    }
+    else if (abaAtiva == "TiposIncidente")
+    {
+        <button class="btn btn-primary mb-2" type="button" onclick="document.getElementById('novoTipoForm').classList.toggle('d-none');">Novo Tipo de Incidente</button>
+        <form id="novoTipoForm" asp-action="CriarTipoIncidente" method="post" class="mb-3 d-none">
+            <div class="input-group w-auto">
+                <input type="text" name="Nome" class="form-control" placeholder="Nome do Tipo" required />
+                <input type="text" name="Descricao" class="form-control" placeholder="Descrição" required />
+                <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+        </form>
+        <table class="table table-bordered table-striped">
+            <thead><tr><th>ID</th><th>Nome</th><th>Descrição</th><th>Ações</th></tr></thead>
+            <tbody>
+            @foreach (var item in ViewBag.TiposIncidente ?? new List<object>())
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Nome</td>
+                    <td>@item.Descricao</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-warning" onclick="editarTipo(@item.Id)">Editar</button>
+                        <form asp-action="ExcluirTipoIncidente" method="post" class="d-inline" onsubmit="return confirm('Excluir este tipo?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr id="editTipoForm-@item.Id" class="d-none">
+                    <td colspan="4">
+                        <form asp-action="EditarTipoIncidente" method="post" class="form-inline">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input type="text" name="Nome" value="@item.Nome" class="form-control d-inline w-auto" required />
+                            <input type="text" name="Descricao" value="@item.Descricao" class="form-control d-inline w-auto" required />
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoTipo(@item.Id)">Cancelar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <script>
+            function editarTipo(id) {
+                document.getElementById('editTipoForm-' + id).classList.remove('d-none');
+            }
+            function cancelarEdicaoTipo(id) {
+                document.getElementById('editTipoForm-' + id).classList.add('d-none');
+            }
+        </script>
+    }
+    else if (abaAtiva == "Criticidades")
+    {
+        <button class="btn btn-primary mb-2" type="button" onclick="document.getElementById('novoCriticidadeForm').classList.toggle('d-none');">Nova Criticidade</button>
+        <form id="novoCriticidadeForm" asp-action="CriarCriticidade" method="post" class="mb-3 d-none">
+            <div class="input-group w-auto">
+                <input type="text" name="Nome" class="form-control" placeholder="Nome" required />
+                <input type="color" name="Cor" class="form-control form-control-color" value="#000000" title="Escolha a cor" required />
+                <input type="number" name="Peso" class="form-control" placeholder="Peso" required />
+                <select name="Downtime" class="form-control" required>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
+                <input type="text" name="Descricao" class="form-control" placeholder="Descrição" required />
+                <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+        </form>
+        <table class="table table-bordered table-striped">
+            <thead><tr><th>ID</th><th>Nome</th><th>Cor</th><th>Peso</th><th>Downtime</th><th>Descrição</th><th>Ações</th></tr></thead>
+            <tbody>
+            @foreach (var item in ViewBag.Criticidades ?? new List<object>())
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Nome</td>
+                    <td><span style="background:@item.Cor;display:inline-block;width:20px;height:20px;"></span></td>
+                    <td>@item.Peso</td>
+                    <td>@(item.Downtime ? "Sim" : "Não")</td>
+                    <td>@item.Descricao</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-warning" onclick="editarCriticidade(@item.Id)">Editar</button>
+                        <form asp-action="ExcluirCriticidade" method="post" class="d-inline" onsubmit="return confirm('Excluir esta criticidade?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr id="editCriticidadeForm-@item.Id" class="d-none">
+                    <td colspan="7">
+                        <form asp-action="EditarCriticidade" method="post" class="form-inline">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input type="text" name="Nome" value="@item.Nome" class="form-control d-inline w-auto" required />
+                            <input type="color" name="Cor" value="@item.Cor" class="form-control form-control-color d-inline w-auto" title="Escolha a cor" required />
+                            <input type="number" name="Peso" value="@item.Peso" class="form-control d-inline w-auto" required />
+                            <select name="Downtime" class="form-control d-inline w-auto" required>
+                                <option value="true" selected="@(item.Downtime ? "selected" : null)">Sim</option>
+                                <option value="false" selected="@(!item.Downtime ? "selected" : null)">Não</option>
+                            </select>
+                            <input type="text" name="Descricao" value="@item.Descricao" class="form-control d-inline w-auto" required />
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoCriticidade(@item.Id)">Cancelar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <script>
+            function editarCriticidade(id) {
+                document.getElementById('editCriticidadeForm-' + id).classList.remove('d-none');
+            }
+            function cancelarEdicaoCriticidade(id) {
+                document.getElementById('editCriticidadeForm-' + id).classList.add('d-none');
+            }
+        </script>
+    }
+    else if (abaAtiva == "Metas")
+    {
+        <button class="btn btn-primary mb-2" type="button" onclick="document.getElementById('novoMetaForm').classList.toggle('d-none');">Nova Meta</button>
+        <form id="novoMetaForm" asp-action="CriarMeta" method="post" class="mb-3 d-none">
+            <div class="input-group w-auto">
+                <select name="AmbienteId" class="form-control" required>
+                    <option value="">Selecione o Ambiente</option>
+                    @foreach (var ambiente in ViewBag.Ambientes ?? new List<object>())
+                    {
+                        <option value="@ambiente.Id">@ambiente.Nome</option>
+                    }
+                </select>
+                <select name="SegmentoId" class="form-control" required>
+                    <option value="">Selecione o Segmento</option>
+                    @foreach (var segmento in ViewBag.Segmentos ?? new List<object>())
+                    {
+                        <option value="@segmento.Id">@segmento.Nome</option>
+                    }
+                </select>
+                <input type="number" name="Peso" class="form-control" placeholder="Peso (%)" required />
+                <input type="number" name="MTTRMetaHoras" class="form-control" placeholder="MTTR (h)" required />
+                <select name="SuperacaoMTTR" class="form-control" required>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
+                <input type="number" name="MTBFMetaHoras" class="form-control" placeholder="MTBF (h)" required />
+                <select name="SuperacaoMTBF" class="form-control" required>
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </select>
+                <input type="number" name="MTBFMetaDias" class="form-control" placeholder="MTBF (dias)" required />
+                <input type="number" name="DisponibilidadeMeta" class="form-control" placeholder="Disponibilidade (%)" required />
+                <button type="submit" class="btn btn-success">Salvar</button>
+            </div>
+        </form>
+        <table class="table table-bordered table-striped">
+            <thead><tr><th>ID</th><th>Ambiente</th><th>Segmento</th><th>Peso (%)</th><th>MTTR (h)</th><th>SUP. MTTR</th><th>MTBF (h)</th><th>SUP. MTBF</th><th>MTBF (dias)</th><th>Disponibilidade (%)</th><th>Ações</th></tr></thead>
+            <tbody>
+            @foreach (var item in ViewBag.Metas ?? new List<object>())
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Ambiente?.Nome</td>
+                    <td>@item.Segmento?.Nome</td>
+                    <td>@item.Peso</td>
+                    <td>@item.MTTRMetaHoras</td>
+                    <td>@(item.SuperacaoMTTR ? "Sim" : "Não")</td>
+                    <td>@item.MTBFMetaHoras</td>
+                    <td>@(item.SuperacaoMTBF ? "Sim" : "Não")</td>
+                    <td>@item.MTBFMetaDias</td>
+                    <td>@item.DisponibilidadeMeta</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-warning" onclick="editarMeta(@item.Id)">Editar</button>
+                        <form asp-action="ExcluirMeta" method="post" class="d-inline" onsubmit="return confirm('Excluir esta meta?');">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr id="editMetaForm-@item.Id" class="d-none">
+                    <td colspan="11">
+                        <form asp-action="EditarMeta" method="post" class="form-inline">
+                            <input type="hidden" name="Id" value="@item.Id" />
+                            <input type="hidden" name="AmbienteId" value="@item.AmbienteId" />
+                            <input type="hidden" name="SegmentoId" value="@item.SegmentoId" />
+                            <input type="number" name="Peso" value="@item.Peso" class="form-control d-inline w-auto" required />
+                            <input type="number" name="MTTRMetaHoras" value="@item.MTTRMetaHoras" class="form-control d-inline w-auto" required />
+                            <select name="SuperacaoMTTR" class="form-control d-inline w-auto" required>
+                                <option value="true" selected="@(item.SuperacaoMTTR ? "selected" : null)">Sim</option>
+                                <option value="false" selected="@(!item.SuperacaoMTTR ? "selected" : null)">Não</option>
+                            </select>
+                            <input type="number" name="MTBFMetaHoras" value="@item.MTBFMetaHoras" class="form-control d-inline w-auto" required />
+                            <select name="SuperacaoMTBF" class="form-control d-inline w-auto" required>
+                                <option value="true" selected="@(item.SuperacaoMTBF ? "selected" : null)">Sim</option>
+                                <option value="false" selected="@(!item.SuperacaoMTBF ? "selected" : null)">Não</option>
+                            </select>
+                            <input type="number" name="MTBFMetaDias" value="@item.MTBFMetaDias" class="form-control d-inline w-auto" required />
+                            <input type="number" name="DisponibilidadeMeta" value="@item.DisponibilidadeMeta" class="form-control d-inline w-auto" required />
+                            <button type="submit" class="btn btn-success">Salvar</button>
+                            <button type="button" class="btn btn-secondary" onclick="cancelarEdicaoMeta(@item.Id)">Cancelar</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+        <script>
+            function editarMeta(id) {
+                document.getElementById('editMetaForm-' + id).classList.remove('d-none');
+            }
+            function cancelarEdicaoMeta(id) {
+                document.getElementById('editMetaForm-' + id).classList.add('d-none');
+            }
+        </script>
+    }
+</div> 

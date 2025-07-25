@@ -3,13 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - @(ViewBag.CabecalhoSistema ?? "DorowCamp")</title>
+    <title>@ViewData["Title"] - @(ViewBag.CabecalhoSistema ?? "Diario de Bordo")</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/messages.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Dashboard.styles.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/png" href="https://frontend.senior.com.br/tecnologia/platform/login/assets/image/favicon.png" />
     <style>
         .sidebar-link, .sidebar .dropdown-menu .dropdown-item {
             color: #fff !important;
@@ -25,20 +26,33 @@
 <body style="background-color: #f8f9fa; color: #495057;">
     <div class="d-flex">
         <!-- Sidebar -->
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-header p-3 border-bottom border-secondary">
+        <nav class="sidebar bg-login-senior" id="sidebar">
+            <div class="sidebar-header p-3 border-bottom border-secondary text-center">
+                <img src="https://frontend.senior.com.br/tecnologia/platform/login/assets/image/favicon.png" alt="Logo" style="width:48px;height:48px;" class="mb-2" />
                 <h4 class="mb-0">
                     <i class="bi bi-gear-fill me-2"></i>
-                    @(ViewBag.CabecalhoSistema ?? "DorowCamp")
+                    @(ViewBag.CabecalhoSistema ?? "Diario de Bordo")
                 </h4>
             </div>
             
             <div class="sidebar-content p-3">
                 <ul class="nav flex-column">
                     <li class="nav-item mb-2">
-                        <a class="nav-link text-white-50 sidebar-link" href="@Url.Action("Index", "Home")" data-bs-toggle="tooltip" title="Dashboard">
+                        <a class="nav-link text-white-50 sidebar-link" href="@Url.Action("Index", "Dashboard")" data-bs-toggle="tooltip" title="Dashboard">
                             <i class="bi bi-speedometer2 me-2"></i>
                             <span class="sidebar-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link text-white-50 sidebar-link" href="@Url.Action("Create", "Incidente")" data-bs-toggle="tooltip" title="Registrar Novo Incidente">
+                            <i class="bi bi-plus-circle me-2"></i>
+                            <span class="sidebar-text">Registrar Novo Incidente</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a class="nav-link text-white-50 sidebar-link" href="@Url.Action("Index", "Incidente")" data-bs-toggle="tooltip" title="Incidentes">
+                            <i class="bi bi-list-ul me-2"></i>
+                            <span class="sidebar-text">Incidentes</span>
                         </a>
                     </li>
                     <!-- Novo menu Cadastros -->
@@ -50,27 +64,27 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark">
                                 <li>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="bi bi-exclamation-diamond me-2"></i>
-                                        Criticidade
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="bi bi-list-ol me-2"></i>
-                                        Tipos de Incidentes
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="@Url.Action("Index", "ParametroAmbiente")">
+                                    <a class="dropdown-item" href="@Url.Action("Index", "Cadastro", new { aba = "Ambientes" })">
                                         <i class="bi bi-server me-2"></i>
                                         Ambientes
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item" href="@Url.Action("Index", "Cadastro", new { aba = "Criticidades" })">
+                                        <i class="bi bi-exclamation-diamond me-2"></i>
+                                        Criticidade
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Index", "Cadastro", new { aba = "Segmentos" })">
                                         <i class="bi bi-diagram-3 me-2"></i>
                                         Segmentos
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="@Url.Action("Index", "Cadastro", new { aba = "TiposIncidente" })">
+                                        <i class="bi bi-list-ol me-2"></i>
+                                        Tipos de Incidentes
                                     </a>
                                 </li>
                             </ul>
@@ -233,7 +247,7 @@
                     <div class="row justify-content-center align-items-center">
                         <div class="col-auto">
                             <span class="footer-text me-3">
-                                @(ViewBag.NomeRodape ?? "Sistema DorowCamp 2025©")
+                                @(ViewBag.NomeRodape ?? "Diario de Bordo")
                             </span>
                             <small class="version-text">
                                 Versão @(ViewBag.VersaoSistema ?? "1.0.0")
@@ -267,7 +281,7 @@
       </div>
     </div>
     
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
@@ -367,6 +381,6 @@
             document.addEventListener('contextmenu',function(e){e.preventDefault();});
         })();
     </script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

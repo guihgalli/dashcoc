@@ -1,0 +1,52 @@
+@model Dashboard.Services.DashboardViewModel
+@{
+    ViewBag.Title = "Dashboard Operacional";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Dashboard Operacional</h2>
+
+<div class="row mb-4">
+    <div class="col-md-2">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">MTTR</div>
+            <div class="card-body"><h4>@Model.MTTR min</h4></div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">MTBF</div>
+            <div class="card-body"><h4>@Model.MTBF min</h4></div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Disponibilidade Média</div>
+            <div class="card-body"><h4>@Model.DisponibilidadeMedia %</h4></div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Total Incidentes</div>
+            <div class="card-body"><h4>@Model.TotalIncidentes</h4></div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-header">Abertos</div>
+            <div class="card-body"><h4>@Model.IncidentesAbertos</h4></div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-header">Críticos</div>
+            <div class="card-body"><h4>@Model.IncidentesCriticos</h4></div>
+        </div>
+    </div>
+</div>
+
+<div class="mb-4">
+    <a href="@Url.Action("NovoIncidente", "Dashboard")" class="btn btn-lg btn-primary">Registrar Novo Incidente</a>
+</div>
+
+<!-- Aqui virão filtros, mapa de calor, gráficos e resumo executivo --> 

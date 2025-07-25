@@ -31,7 +31,8 @@ body {
   top: 0;
   left: 0;
   z-index: 1000;
-  background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+  background: url('https://d2nytdlptrqhdi.cloudfront.net/wp-content/uploads/2025/03/18154805/BG-textura-senior-H-1.jpg') no-repeat center center;
+  background-size: cover;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   display: flex;
@@ -547,4 +548,44 @@ body {
 }
 .switch-toggle input:checked + .slider-toggle:after {
   left: 28px;
+}
+
+/* Tabela responsiva para incidentes */
+.table-responsive, .table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+.table td, .table th {
+  vertical-align: middle;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* Inputs e selects ocupam toda a largura da célula */
+.table .form-control, .table select {
+  width: 100%;
+  min-width: 80px;
+  font-size: 1em;
+}
+
+/* Textarea para edição de descrição e ações tomadas */
+.table textarea.form-control {
+  min-height: 40px;
+  resize: vertical;
+}
+
+/* Criticidade cor ao lado do select, alinhado horizontalmente */
+.criticidade-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.criticidade-inline .cor-criticidade {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  vertical-align: middle;
 }
